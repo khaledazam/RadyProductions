@@ -11,12 +11,20 @@ if (!accessToken || !refreshToken) {
   return Astro.redirect('/login');
 }
 
-const { data: sessionData, error: sessionErr } = await supabase.auth.setSession({
-  access_token: accessToken,
-  refresh_token: refreshToken,
-});
+let sessionData = null;
+let sessionErr = null;
+try {
+  const result = await supabase.auth.setSession({
+    access_token: accessToken,
+    refresh_token: refreshToken,
+  });
+  sessionData = result.data;
+  sessionErr = result.error;
+} catch (err: any) {
+  sessionErr = err;
+}
 
-if (sessionErr || !sessionData.user) {
+if (sessionErr || !sessionData?.user) {
   Astro.cookies.delete('sb-access-token', { path: '/' });
   Astro.cookies.delete('sb-refresh-token', { path: '/' });
   return Astro.redirect('/login');

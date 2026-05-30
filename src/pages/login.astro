@@ -8,14 +8,20 @@ const accessToken = Astro.cookies.get('sb-access-token')?.value;
 const refreshToken = Astro.cookies.get('sb-refresh-token')?.value;
 
 if (accessToken && refreshToken) {
-  const { data } = await supabase.auth.setSession({
-    access_token: accessToken,
-    refresh_token: refreshToken,
-  });
-  if (data.user) {
-    return Astro.redirect('/admin');
+  try {
+    const { data } = await supabase.auth.setSession({
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    });
+    if (data?.user) {
+      return Astro.redirect('/admin');
+    }
+  } catch (err) {
+    // Ignore fetch errors to allow the login page to load normally
+    console.warn("Session check failed (likely missing env vars):", err);
   }
 }
+
 ---
 
 <!DOCTYPE html>

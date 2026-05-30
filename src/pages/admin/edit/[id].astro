@@ -11,12 +11,20 @@ if (!accessToken || !refreshToken) {
   return Astro.redirect('/login');
 }
 
-const { data: sessionData, error: sessionErr } = await supabase.auth.setSession({
-  access_token: accessToken,
-  refresh_token: refreshToken,
-});
+let sessionData = null;
+let sessionErr = null;
+try {
+  const result = await supabase.auth.setSession({
+    access_token: accessToken,
+    refresh_token: refreshToken,
+  });
+  sessionData = result.data;
+  sessionErr = result.error;
+} catch (err: any) {
+  sessionErr = err;
+}
 
-if (sessionErr || !sessionData.user) {
+if (sessionErr || !sessionData?.user) {
   Astro.cookies.delete('sb-access-token', { path: '/' });
   Astro.cookies.delete('sb-refresh-token', { path: '/' });
   return Astro.redirect('/login');
@@ -28,11 +36,20 @@ if (!id) {
   return Astro.redirect('/admin');
 }
 
-const { data: item, error: fetchErr } = await supabase
-  .from('portfolio_items')
-  .select('*')
-  .eq('id', id)
-  .single();
+let item: any = null;
+let fetchErr: any = null;
+
+try {
+  const result = await supabase
+    .from('portfolio_items')
+    .select('*')
+    .eq('id', id)
+    .single();
+  item = result.data;
+  fetchErr = result.error;
+} catch (err: any) {
+  fetchErr = err;
+}
 
 if (fetchErr || !item) {
   return Astro.redirect('/admin');
