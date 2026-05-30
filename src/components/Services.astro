@@ -1,0 +1,177 @@
+---
+import { Heart, Tv, Briefcase, Play, Compass, Film, ArrowRight } from '@lucide/astro';
+
+const services = [
+  {
+    icon: Heart,
+    title: "Wedding Films",
+    description: "Emotionally charged, timeless wedding stories captured with fine art editorial aesthetics and cinematic depth."
+  },
+  {
+    icon: Tv,
+    title: "Commercial Ads",
+    description: "Striking high-concept advertisements designed to tell your brand story, capture market attention, and drive impact."
+  },
+  {
+    icon: Briefcase,
+    title: "Corporate Productions",
+    description: "Sophisticated corporate documentaries, interviews, and brand profiles showcasing your culture and achievements."
+  },
+  {
+    icon: Play,
+    title: "Social Media Content",
+    description: "Fast-paced, highly engaging premium short-form reels, TikToks, and promos crafted to stop the scroll."
+  },
+  {
+    icon: Compass,
+    title: "Drone Cinematography",
+    description: "UHD aerial mapping and cinematic sweeping vistas captured by licensed, precision-focused UAV operators."
+  },
+  {
+    icon: Film,
+    title: "Behind The Scenes",
+    description: "Intimate and raw documentary-style coverage tracking the creative process, shoot preps, and raw talent moments."
+  }
+];
+---
+
+<section id="services" class="relative py-32 bg-brand-matte overflow-hidden font-sans border-t border-brand-charcoal/20">
+  <!-- Top decorative line -->
+  <div class="absolute left-0 top-0 w-full h-[1px] bg-gradient-to-r from-transparent via-brand-gold/20 to-transparent"></div>
+
+  <div class="max-w-7xl mx-auto px-6 md:px-12 w-full">
+    <!-- Header -->
+    <div class="text-center max-w-2xl mx-auto mb-20 select-none">
+      <span class="text-xs tracking-[0.4em] uppercase text-brand-gold font-semibold mb-4 block" id="services-tag">
+        Elite Offerings
+      </span>
+      <h2 class="font-serif text-3xl md:text-5xl font-bold text-brand-ivory mb-6" id="services-title">
+        Cinematic Services
+      </h2>
+      <div class="w-12 h-[1px] bg-brand-gold/60 mx-auto mb-6" id="services-divider"></div>
+      <p class="text-xs md:text-sm text-brand-ivory/60 leading-relaxed" id="services-desc">
+        Tailored visual production workflows designed for those who demand the finest visual output, from initial scripting to the final color grading.
+      </p>
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="services-grid">
+      {services.map(({ icon: Icon, title, description }, idx) => (
+        <div 
+          class="service-card relative overflow-hidden bg-brand-charcoal/25 border border-brand-charcoal/60 p-8 md:p-10 transition-all duration-500 hover:border-brand-gold/30 flex flex-col justify-between group h-[320px] select-none"
+          data-index={idx}
+        >
+          <!-- Glow Overlay (custom cursor tracking) -->
+          <div class="service-glow absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0" style="background: radial-gradient(350px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(199, 167, 106, 0.08), transparent 75%);"></div>
+          
+          <!-- Border Top Glow Line -->
+          <div class="absolute top-0 left-0 w-0 h-[2px] bg-gold-gradient group-hover:w-full transition-all duration-700 ease-in-out"></div>
+          <!-- Border Bottom Glow Line -->
+          <div class="absolute bottom-0 right-0 w-0 h-[2px] bg-gold-gradient group-hover:w-full transition-all duration-700 ease-in-out"></div>
+
+          <div class="relative z-10">
+            <!-- Icon -->
+            <div class="text-brand-gold mb-6 inline-block p-3 bg-brand-matte border border-brand-charcoal rounded-full group-hover:border-brand-gold/30 group-hover:scale-110 transition-all duration-500">
+              <Icon class="w-6 h-6" />
+            </div>
+            
+            <!-- Content -->
+            <h3 class="font-serif text-xl md:text-2xl font-bold text-brand-ivory mb-4 group-hover:text-brand-gold transition-colors duration-300">
+              {title}
+            </h3>
+            <p class="text-xs md:text-sm text-brand-ivory/60 leading-relaxed">
+              {description}
+            </p>
+          </div>
+
+          <!-- Bottom Inquiry Action -->
+          <div class="relative z-10 flex items-center gap-2 text-brand-gold opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-3 group-hover:translate-y-0">
+            <a href="#contact" class="text-[10px] tracking-widest uppercase font-semibold hover:underline">Inquire Project</a>
+            <ArrowRight class="w-3.5 h-3.5" />
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // --- HUD Updates ---
+  ScrollTrigger.create({
+    trigger: '#services',
+    start: 'top center',
+    end: 'bottom center',
+    onEnter: () => {
+      window.dispatchEvent(new CustomEvent('hudUpdate', {
+        detail: { iso: '160', shutter: '1/120', fps: '30', aperture: '5.6', wb: '5400K' }
+      }));
+    },
+    onEnterBack: () => {
+      window.dispatchEvent(new CustomEvent('hudUpdate', {
+        detail: { iso: '160', shutter: '1/120', fps: '30', aperture: '5.6', wb: '5400K' }
+      }));
+    }
+  });
+
+  // --- ScrollTrigger Entries ---
+  gsap.fromTo('#services-tag', { opacity: 0, y: 15 }, {
+    opacity: 1,
+    y: 0,
+    duration: 0.8,
+    scrollTrigger: { trigger: '#services-tag', start: 'top 85%' }
+  });
+
+  gsap.fromTo('#services-title', { opacity: 0, y: 20 }, {
+    opacity: 1,
+    y: 0,
+    duration: 1,
+    scrollTrigger: { trigger: '#services-title', start: 'top 85%' }
+  });
+
+  gsap.fromTo('#services-divider', { scaleX: 0 }, {
+    scaleX: 1,
+    duration: 1.2,
+    scrollTrigger: { trigger: '#services-divider', start: 'top 85%' }
+  });
+
+  gsap.fromTo('#services-desc', { opacity: 0, y: 15 }, {
+    opacity: 1,
+    y: 0,
+    duration: 1,
+    scrollTrigger: { trigger: '#services-desc', start: 'top 85%' }
+  });
+
+  // Grid cards reveal
+  const cards = document.querySelectorAll('.service-card');
+  gsap.fromTo(cards, 
+    { opacity: 0, y: 40 },
+    {
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      stagger: 0.15,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '#services-grid',
+        start: 'top 75%'
+      }
+    }
+  );
+
+  // --- Mouse-tracking Glow Effect ---
+  const serviceCards = document.querySelectorAll('.service-card') as NodeListOf<HTMLElement>;
+  serviceCards.forEach((card) => {
+    card.addEventListener('mousemove', (e: MouseEvent) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    });
+  });
+</script>

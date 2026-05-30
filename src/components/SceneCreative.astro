@@ -1,0 +1,115 @@
+---
+---
+
+<section id="scene-creative" class="relative min-h-[150vh] bg-brand-matte w-full overflow-hidden flex flex-col justify-center py-32 border-t-0">
+  
+  <!-- Fixed sticky container for the cinematic editing environment -->
+  <div class="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
+    
+    <!-- Deep background glow -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(13,13,13,0.9)_0%,_rgba(5,5,5,1)_100%)] z-0"></div>
+
+    <div class="relative z-10 w-full max-w-7xl mx-auto px-6 text-center select-none">
+      
+      <!-- Timeline Interface Elements (Floating) -->
+      <div id="editing-ui" class="absolute inset-0 pointer-events-none opacity-0 flex flex-col justify-between py-20">
+        <!-- Top Nodes/Color Grading -->
+        <div class="flex justify-center gap-12 opacity-40">
+          <div class="w-16 h-16 rounded-full border border-brand-gold/30 flex items-center justify-center relative spin-slow">
+            <div class="absolute inset-1 rounded-full border border-t-brand-gold border-r-transparent border-b-transparent border-l-transparent"></div>
+          </div>
+          <div class="w-16 h-16 rounded-full border border-cyan-500/30 flex items-center justify-center relative spin-slow-reverse">
+            <div class="absolute inset-1 rounded-full border border-b-cyan-500 border-r-transparent border-t-transparent border-l-transparent"></div>
+          </div>
+          <div class="w-16 h-16 rounded-full border border-rose-500/30 flex items-center justify-center relative spin-slow">
+            <div class="absolute inset-1 rounded-full border border-l-rose-500 border-r-transparent border-t-transparent border-b-transparent"></div>
+          </div>
+        </div>
+
+        <!-- Bottom Timeline Tracks -->
+        <div class="flex flex-col gap-2 opacity-50 px-10">
+          <div class="h-4 w-full bg-brand-charcoal/40 rounded flex gap-1 overflow-hidden relative">
+            <div class="absolute top-0 bottom-0 left-1/2 w-[1px] bg-red-600 z-10"></div>
+            <div class="h-full w-1/3 bg-brand-gold/40 rounded-sm translate-x-[10%]"></div>
+            <div class="h-full w-1/4 bg-brand-champagne/30 rounded-sm translate-x-[50%]"></div>
+          </div>
+          <div class="h-3 w-full bg-brand-charcoal/20 rounded flex gap-1 overflow-hidden relative">
+            <div class="absolute top-0 bottom-0 left-1/2 w-[1px] bg-red-600 z-10"></div>
+            <div class="h-full w-1/2 bg-cyan-900/40 rounded-sm translate-x-[-10%]"></div>
+          </div>
+          <div class="h-3 w-full bg-brand-charcoal/20 rounded flex gap-1 overflow-hidden relative">
+            <div class="absolute top-0 bottom-0 left-1/2 w-[1px] bg-red-600 z-10"></div>
+            <div class="h-full w-2/3 bg-emerald-900/40 rounded-sm translate-x-[20%]"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Typography -->
+      <h2 id="creative-text" class="font-serif text-4xl md:text-7xl lg:text-8xl font-bold text-brand-ivory leading-tight relative z-20">
+        <span class="block overflow-hidden"><span class="inline-block text-line opacity-0 translate-y-[100%]">Every frame is</span></span>
+        <span class="block overflow-hidden"><span class="inline-block text-line opacity-0 translate-y-[100%] text-gold-gradient">crafted with precision.</span></span>
+      </h2>
+
+    </div>
+
+    <!-- Cinematic Vignette Overlay -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_40%,_var(--color-brand-matte)_100%)] pointer-events-none z-30"></div>
+  </div>
+</section>
+
+<style>
+  .spin-slow { animation: spin 8s linear infinite; }
+  .spin-slow-reverse { animation: spin 10s linear infinite reverse; }
+  @keyframes spin { 100% { transform: rotate(360deg); } }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const section = document.getElementById('scene-creative');
+  if (section) {
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 1,
+        onEnter: () => {
+          // Update HUD for Editing environment
+          window.dispatchEvent(new CustomEvent('hudUpdate', {
+            detail: { iso: '400', shutter: '1/48', fps: '60', aperture: '2.8', wb: '6500K' }
+          }));
+        },
+        onEnterBack: () => {
+          window.dispatchEvent(new CustomEvent('hudUpdate', {
+            detail: { iso: '400', shutter: '1/48', fps: '60', aperture: '2.8', wb: '6500K' }
+          }));
+        }
+      }
+    });
+
+    // Animate Editing UI fading in and timelines moving (scrubbed with scroll)
+    tl.to('#editing-ui', { opacity: 1, duration: 0.5 }, 0);
+    
+    // Move timeline clips opposite to scroll to simulate playback head moving
+    tl.to('#editing-ui .bg-brand-gold\\/40', { x: '-=50%', duration: 2 }, 0);
+    tl.to('#editing-ui .bg-cyan-900\\/40', { x: '-=30%', duration: 2 }, 0);
+    tl.to('#editing-ui .bg-emerald-900\\/40', { x: '-=60%', duration: 2 }, 0);
+
+    // Text Reveal
+    tl.to('.text-line', {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      stagger: 0.2,
+      ease: 'power3.out'
+    }, 0.2);
+
+    // Fade out towards the end for the next scene
+    tl.to('#editing-ui', { opacity: 0, duration: 0.5 }, 1.5);
+    tl.to('.text-line', { opacity: 0, y: -50, duration: 0.5, stagger: 0.1 }, 1.5);
+  }
+</script>

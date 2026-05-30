@@ -1,0 +1,289 @@
+---
+import { MessageCircle, Phone, Mail, MapPin } from '@lucide/astro';
+
+const eventTypes = [
+  "Wedding Film",
+  "Commercial / Ad",
+  "Corporate Film",
+  "Drone Cinematography",
+  "Behind The Scenes",
+  "Other"
+];
+---
+
+<section id="contact" class="relative py-32 bg-brand-matte overflow-hidden font-sans border-t border-brand-charcoal/20">
+  <!-- Decorative background mesh -->
+  <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-brand-gold/5 blur-[150px] rounded-full pointer-events-none z-0"></div>
+
+  <div class="max-w-7xl mx-auto px-6 md:px-12 w-full relative z-10">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+      
+      <!-- Column 1: Brand details & direct CTAs (cols 1-5) -->
+      <div class="lg:col-span-5 flex flex-col justify-between">
+        <div>
+          <span class="text-xs tracking-[0.4em] uppercase text-brand-gold font-semibold mb-4 block" id="contact-tag">
+            Booking
+          </span>
+          <h2 class="font-serif text-3xl md:text-5xl font-bold text-brand-ivory mb-6 leading-tight" id="contact-title">
+            Let's Write <br />
+            <span class="text-gold-gradient">Your Story.</span>
+          </h2>
+          <p class="text-xs md:text-sm text-brand-ivory/60 leading-relaxed max-w-sm mb-12" id="contact-desc">
+            Ready to elevate your vision into cinematic gold? Reach out via the form, or connect directly through phone and WhatsApp.
+          </p>
+
+          <!-- Direct Contacts -->
+          <div class="flex flex-col gap-6" id="contact-info">
+            <!-- Phone -->
+            <a href="tel:+201066151490" class="flex items-center gap-4 group hover:text-brand-gold transition-colors duration-300">
+              <div class="w-10 h-10 border border-brand-charcoal group-hover:border-brand-gold/30 rounded-full flex items-center justify-center text-brand-gold bg-brand-charcoal/20 transition-all duration-300">
+                <Phone class="w-4 h-4" />
+              </div>
+              <div class="flex flex-col text-xs">
+                <span class="text-brand-champagne/50 uppercase tracking-widest text-[9px] mb-0.5">Call Direct</span>
+                <span class="text-brand-ivory group-hover:text-brand-gold font-semibold">+20 106 615 1490</span>
+              </div>
+            </a>
+
+            <!-- WhatsApp -->
+            <a href="https://wa.me/201066151490" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 group hover:text-brand-gold transition-colors duration-300">
+              <div class="w-10 h-10 border border-brand-charcoal group-hover:border-brand-gold/30 rounded-full flex items-center justify-center text-emerald-400 bg-brand-charcoal/20 transition-all duration-300">
+                <MessageCircle class="w-4 h-4" />
+              </div>
+              <div class="flex flex-col text-xs">
+                <span class="text-brand-champagne/50 uppercase tracking-widest text-[9px] mb-0.5">WhatsApp Chat</span>
+                <span class="text-brand-ivory group-hover:text-emerald-400 font-semibold">+20 106 615 1490</span>
+              </div>
+            </a>
+
+            <!-- Email -->
+            <a href="mailto:booking@radyvideo.com" class="flex items-center gap-4 group hover:text-brand-gold transition-colors duration-300">
+              <div class="w-10 h-10 border border-brand-charcoal group-hover:border-brand-gold/30 rounded-full flex items-center justify-center text-brand-gold bg-brand-charcoal/20 transition-all duration-300">
+                <Mail class="w-4 h-4" />
+              </div>
+              <div class="flex flex-col text-xs">
+                <span class="text-brand-champagne/50 uppercase tracking-widest text-[9px] mb-0.5">Send Email</span>
+                <span class="text-brand-ivory group-hover:text-brand-gold font-semibold">booking@radyvideo.com</span>
+              </div>
+            </a>
+
+            <!-- Location -->
+            <div class="flex items-center gap-4 group">
+              <div class="w-10 h-10 border border-brand-charcoal rounded-full flex items-center justify-center text-brand-gold bg-brand-charcoal/20">
+                <MapPin class="w-4 h-4" />
+              </div>
+              <div class="flex flex-col text-xs">
+                <span class="text-brand-champagne/50 uppercase tracking-widest text-[9px] mb-0.5">Office Hub</span>
+                <span class="text-brand-ivory font-semibold">Cairo, Egypt</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Column 2: Contact Form (cols 6-12) -->
+      <div class="lg:col-span-7" id="contact-form-wrapper">
+        <form id="booking-form" class="glassmorphism-premium p-8 md:p-12 flex flex-col gap-6 border border-brand-charcoal select-none">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Name Field -->
+            <div class="relative group">
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                class="w-full bg-brand-matte border border-brand-charcoal px-4 py-3.5 text-xs text-brand-ivory focus:border-brand-gold focus:outline-none transition-all duration-300 placeholder-transparent peer"
+                placeholder="Full Name"
+              />
+              <label
+                for="name"
+                class="absolute left-4 top-3.5 text-xs text-brand-ivory/40 pointer-events-none transition-all duration-300 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-xs peer-focus:top-[-10px] peer-focus:text-[9px] peer-focus:text-brand-gold peer-focus:bg-brand-matte peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-[-10px] peer-[:not(:placeholder-shown)]:text-[9px] peer-[:not(:placeholder-shown)]:text-brand-gold peer-[:not(:placeholder-shown)]:bg-brand-matte peer-[:not(:placeholder-shown)]:px-2"
+              >
+                Full Name
+              </label>
+            </div>
+
+            <!-- Email Field -->
+            <div class="relative group">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                class="w-full bg-brand-matte border border-brand-charcoal px-4 py-3.5 text-xs text-brand-ivory focus:border-brand-gold focus:outline-none transition-all duration-300 placeholder-transparent peer"
+                placeholder="Email Address"
+              />
+              <label
+                for="email"
+                class="absolute left-4 top-3.5 text-xs text-brand-ivory/40 pointer-events-none transition-all duration-300 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-xs peer-focus:top-[-10px] peer-focus:text-[9px] peer-focus:text-brand-gold peer-focus:bg-brand-matte peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-[-10px] peer-[:not(:placeholder-shown)]:text-[9px] peer-[:not(:placeholder-shown)]:text-brand-gold peer-[:not(:placeholder-shown)]:bg-brand-matte peer-[:not(:placeholder-shown)]:px-2"
+              >
+                Email Address
+              </label>
+            </div>
+
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Phone Field -->
+            <div class="relative group">
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                required
+                class="w-full bg-brand-matte border border-brand-charcoal px-4 py-3.5 text-xs text-brand-ivory focus:border-brand-gold focus:outline-none transition-all duration-300 placeholder-transparent peer"
+                placeholder="Phone Number"
+              />
+              <label
+                for="phone"
+                class="absolute left-4 top-3.5 text-xs text-brand-ivory/40 pointer-events-none transition-all duration-300 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-xs peer-focus:top-[-10px] peer-focus:text-[9px] peer-focus:text-brand-gold peer-focus:bg-brand-matte peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-[-10px] peer-[:not(:placeholder-shown)]:text-[9px] peer-[:not(:placeholder-shown)]:text-brand-gold peer-[:not(:placeholder-shown)]:bg-brand-matte peer-[:not(:placeholder-shown)]:px-2"
+              >
+                Phone Number
+              </label>
+            </div>
+
+            <!-- Date Field -->
+            <div class="relative group">
+              <input
+                type="date"
+                id="date"
+                name="date"
+                required
+                class="w-full bg-brand-matte border border-brand-charcoal px-4 py-3.5 text-xs text-brand-ivory/60 focus:border-brand-gold focus:outline-none transition-all duration-300"
+              />
+            </div>
+
+          </div>
+
+          <!-- Project Type Dropdown -->
+          <div class="relative group">
+            <select
+              id="event-type"
+              name="eventType"
+              required
+              class="w-full bg-brand-matte border border-brand-charcoal px-4 py-3.5 text-xs text-brand-ivory/70 focus:border-brand-gold focus:outline-none transition-all duration-300 appearance-none"
+            >
+              <option value="" disabled selected>Select Project Scope</option>
+              {eventTypes.map((type) => (
+                <option value={type}>{type}</option>
+              ))}
+            </select>
+            <!-- Custom caret -->
+            <div class="absolute right-4 top-4.5 pointer-events-none text-brand-gold/60 text-[9px] uppercase tracking-wider font-bold">
+              Select
+            </div>
+          </div>
+
+          <!-- Message Field -->
+          <div class="relative group">
+            <textarea
+              id="message"
+              name="message"
+              required
+              rows="4"
+              class="w-full bg-brand-matte border border-brand-charcoal px-4 py-3.5 text-xs text-brand-ivory focus:border-brand-gold focus:outline-none transition-all duration-300 placeholder-transparent peer resize-none"
+              placeholder="Tell Us Your Vision"
+            ></textarea>
+            <label
+              for="message"
+              class="absolute left-4 top-3.5 text-xs text-brand-ivory/40 pointer-events-none transition-all duration-300 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-xs peer-focus:top-[-10px] peer-focus:text-[9px] peer-focus:text-brand-gold peer-focus:bg-brand-matte peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-[-10px] peer-[:not(:placeholder-shown)]:text-[9px] peer-[:not(:placeholder-shown)]:text-brand-gold peer-[:not(:placeholder-shown)]:bg-brand-matte peer-[:not(:placeholder-shown)]:px-2"
+            >
+              Tell Us Your Vision
+            </label>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            id="form-submit"
+            class="magnetic-btn w-full py-4 bg-brand-gold text-brand-matte font-bold text-xs tracking-[0.2em] uppercase hover:bg-transparent border border-brand-gold hover:text-brand-gold transition-all duration-500 relative overflow-hidden group shadow-[0_0_25px_rgba(199,167,106,0.15)] mt-2"
+          >
+            <span class="absolute inset-0 bg-brand-matte translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-0"></span>
+            <span class="relative z-10" id="submit-text">Send Message</span>
+          </button>
+
+          <!-- Feedback Success/Error -->
+          <div id="form-feedback" class="text-xs text-center font-medium mt-2 hidden transition-all duration-300"></div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // --- ScrollTrigger reveals ---
+  gsap.fromTo('#contact-tag', { opacity: 0, y: 15 }, {
+    opacity: 1, y: 0, duration: 0.8,
+    scrollTrigger: { trigger: '#contact-tag', start: 'top 85%' }
+  });
+
+  gsap.fromTo('#contact-title', { opacity: 0, y: 20 }, {
+    opacity: 1, y: 0, duration: 1,
+    scrollTrigger: { trigger: '#contact-title', start: 'top 85%' }
+  });
+
+  gsap.fromTo('#contact-desc', { opacity: 0, y: 15 }, {
+    opacity: 1, y: 0, duration: 1,
+    scrollTrigger: { trigger: '#contact-desc', start: 'top 85%' }
+  });
+
+  gsap.fromTo('#contact-info a, #contact-info div', { opacity: 0, x: -30 }, {
+    opacity: 1, x: 0, duration: 0.8, stagger: 0.1,
+    scrollTrigger: { trigger: '#contact-info', start: 'top 85%' }
+  });
+
+  gsap.fromTo('#contact-form-wrapper', { opacity: 0, x: 50 }, {
+    opacity: 1, x: 0, duration: 1.2, ease: 'power3.out',
+    scrollTrigger: { trigger: '#contact-form-wrapper', start: 'top 80%' }
+  });
+
+  // --- Form Submit Interceptor & Animation ---
+  const form = document.getElementById('booking-form') as HTMLFormElement;
+  const feedback = document.getElementById('form-feedback');
+  const submitBtn = document.getElementById('form-submit');
+  const submitText = document.getElementById('submit-text');
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    if (!feedback || !submitBtn || !submitText) return;
+
+    // Loading State
+    submitBtn.setAttribute('disabled', 'true');
+    submitText.textContent = "Processing...";
+
+    // Mock form sending delay
+    setTimeout(() => {
+      // Success response styling
+      submitBtn.removeAttribute('disabled');
+      submitText.textContent = "Send Message";
+      
+      feedback.classList.remove('hidden', 'text-red-500');
+      feedback.classList.add('block', 'text-brand-gold');
+      feedback.textContent = "Inquiry sent successfully. We will reach out to you within 24 hours.";
+
+      form.reset();
+
+      // Fade out feedback message after 5 seconds
+      setTimeout(() => {
+        gsap.to(feedback, {
+          opacity: 0,
+          duration: 0.8,
+          onComplete: () => {
+            feedback.classList.add('hidden');
+            feedback.classList.remove('block');
+            feedback.style.opacity = '1';
+          }
+        });
+      }, 5000);
+    }, 1500);
+  });
+</script>

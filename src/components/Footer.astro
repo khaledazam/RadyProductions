@@ -1,0 +1,189 @@
+---
+// Raw SVG icons are used instead of @lucide/astro to avoid package resolve issues and ensure maximum performance.
+---
+
+<footer class="bg-brand-matte border-t border-brand-charcoal/40 pt-20 pb-10 relative overflow-hidden font-sans">
+  <!-- Subtle gold background glow -->
+  <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-brand-gold/5 blur-[150px] rounded-full pointer-events-none z-0"></div>
+
+  <div class="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 pb-16">
+      
+      <!-- Column 1: Brand details -->
+      <div class="md:col-span-2 flex flex-col gap-6">
+        <a href="#" class="flex items-center gap-3 self-start select-none">
+          <div class="w-10 h-10 flex items-center justify-center border border-brand-gold/30 rounded-full">
+            <span class="font-serif text-xl text-brand-gold font-bold">R</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-serif text-lg md:text-xl font-bold tracking-wider text-gold-gradient">Rady</span>
+            <span class="text-[8px] tracking-[0.3em] uppercase text-brand-champagne/80 -mt-1">Video Production</span>
+          </div>
+        </a>
+        <p class="text-xs md:text-sm text-brand-ivory/60 max-w-sm leading-relaxed">
+          Premium cinematic storytelling for weddings, brands, commercials, and unforgettable moments. Creating visuals that stay, tell stories, and make a lasting impact.
+        </p>
+        <!-- Social Icons -->
+        <div class="flex items-center gap-4 mt-2">
+          <!-- Instagram -->
+          <a 
+            href="https://instagram.com/rady.video" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            aria-label="Instagram"
+            class="w-9 h-9 flex items-center justify-center border border-brand-charcoal hover:border-brand-gold text-brand-ivory/70 hover:text-brand-gold rounded-full transition-all duration-300 group"
+          >
+            <svg class="w-4 h-4 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+          </a>
+
+          <!-- YouTube -->
+          <a 
+            href="https://youtube.com" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            aria-label="YouTube"
+            class="w-9 h-9 flex items-center justify-center border border-brand-charcoal hover:border-brand-gold text-brand-ivory/70 hover:text-brand-gold rounded-full transition-all duration-300 group"
+          >
+            <svg class="w-4 h-4 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
+              <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+            </svg>
+          </a>
+
+          <!-- Vimeo (Film Reel) -->
+          <a 
+            href="https://vimeo.com" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            aria-label="Vimeo"
+            class="w-9 h-9 flex items-center justify-center border border-brand-charcoal hover:border-brand-gold text-brand-ivory/70 hover:text-brand-gold rounded-full transition-all duration-300 group"
+          >
+            <svg class="w-4 h-4 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="2" ry="2"></rect>
+              <line x1="7" y1="2" x2="7" y2="22"></line>
+              <line x1="17" y1="2" x2="17" y2="22"></line>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <line x1="2" y1="7" x2="7" y2="7"></line>
+              <line x1="2" y1="17" x2="7" y2="17"></line>
+              <line x1="17" y1="17" x2="22" y2="17"></line>
+              <line x1="17" y1="7" x2="22" y2="7"></line>
+            </svg>
+          </a>
+
+          <!-- Email -->
+          <a 
+            href="mailto:contact@radyvideo.com" 
+            aria-label="Email"
+            class="w-9 h-9 flex items-center justify-center border border-brand-charcoal hover:border-brand-gold text-brand-ivory/70 hover:text-brand-gold rounded-full transition-all duration-300 group"
+          >
+            <svg class="w-4 h-4 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Column 2: Navigation Links -->
+      <div class="flex flex-col gap-4">
+        <h4 class="text-xs tracking-[0.2em] uppercase text-brand-gold font-semibold">Explore</h4>
+        <ul class="flex flex-col gap-2.5">
+          {['About', 'Services', 'Portfolio', 'Experience', 'Testimonials'].map((item) => (
+            <li>
+              <a 
+                href={`#${item.toLowerCase()}`} 
+                class="text-xs text-brand-ivory/65 hover:text-brand-gold transition-colors duration-300"
+              >
+                {item}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Column 3: Contact Info -->
+      <div class="flex flex-col gap-4">
+        <h4 class="text-xs tracking-[0.2em] uppercase text-brand-gold font-semibold">Inquiries</h4>
+        <ul class="flex flex-col gap-3 text-xs text-brand-ivory/65">
+          <li>
+            <span class="block text-brand-champagne/50 text-[10px] uppercase tracking-wider mb-1">Phone & WhatsApp</span>
+            <a href="tel:+201066151490" class="hover:text-brand-gold transition-colors duration-300">+20 10 6615 1490</a>
+          </li>
+          <li>
+            <span class="block text-brand-champagne/50 text-[10px] uppercase tracking-wider mb-1">Office Location</span>
+            <span class="text-brand-ivory/80">Cairo, Egypt</span>
+          </li>
+          <li>
+            <span class="block text-brand-champagne/50 text-[10px] uppercase tracking-wider mb-1">Email</span>
+            <a href="mailto:info@radyvideo.com" class="hover:text-brand-gold transition-colors duration-300">info@radyvideo.com</a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Bottom Line -->
+    <div class="flex flex-col md:flex-row justify-between items-center gap-6 pt-10 border-t border-brand-charcoal/20">
+      <!-- Copyright -->
+      <p class="text-[10px] tracking-widest text-brand-ivory/40 uppercase text-center md:text-left">
+        &copy; {new Date().getFullYear()} RADY Video Production. All Rights Reserved.
+      </p>
+
+      <!-- Back to Top (Magnetic) -->
+      <button 
+        id="back-to-top" 
+        class="magnetic-btn-footer w-12 h-12 flex items-center justify-center border border-brand-gold/40 text-brand-gold hover:text-brand-matte rounded-full transition-all duration-300 relative group overflow-hidden"
+        aria-label="Back to Top"
+      >
+        <span class="absolute inset-0 bg-gold-gradient translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-0"></span>
+        <svg class="w-5 h-5 relative z-10 transition-transform duration-500 group-hover:-translate-y-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="19" x2="12" y2="5"></line>
+          <polyline points="5 12 12 5 19 12"></polyline>
+        </svg>
+      </button>
+    </div>
+  </div>
+</footer>
+
+<script>
+  import { gsap } from 'gsap';
+
+  // --- Back to Top Action ---
+  const backToTopBtn = document.getElementById('back-to-top');
+  backToTopBtn?.addEventListener('click', () => {
+    if (window.lenis) {
+      window.lenis.scrollTo(0, { duration: 1.5 });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  // --- Magnetic Back To Top Button ---
+  if (backToTopBtn) {
+    backToTopBtn.addEventListener('mousemove', (e: any) => {
+      const rect = backToTopBtn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      
+      gsap.to(backToTopBtn, {
+        x: x * 0.45,
+        y: y * 0.45,
+        duration: 0.3,
+        ease: 'power2.out'
+      });
+    });
+
+    backToTopBtn.addEventListener('mouseleave', () => {
+      gsap.to(backToTopBtn, {
+        x: 0,
+        y: 0,
+        duration: 0.5,
+        ease: 'elastic.out(1.1, 0.4)'
+      });
+    });
+  }
+</script>

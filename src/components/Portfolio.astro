@@ -1,0 +1,351 @@
+---
+import { Play, X } from '@lucide/astro';
+
+const categories = [
+  { id: 'all', label: 'All' },
+  { id: 'weddings', label: 'Weddings' },
+  { id: 'commercials', label: 'Commercials' },
+  { id: 'corporate', label: 'Corporate' },
+  { id: 'bts', label: 'Behind The Scenes' }
+];
+
+const portfolioItems = [
+  {
+    id: 1,
+    title: "Gabriella & Alessandro",
+    category: "weddings",
+    image: "/assets/portfolio_wedding.png",
+    videoUrl: "https://player.vimeo.com/external/371433846.sd.mp4?s=236da2f3c02af00ba84ebb0e9edcc351cc92d4b8&profile_id=165&oauth2_token_id=57447761",
+    location: "Tuscany, Italy"
+  },
+  {
+    id: 2,
+    title: "The Neon Horizon",
+    category: "commercials",
+    image: "/assets/portfolio_commercial.png",
+    videoUrl: "https://player.vimeo.com/external/435674703.sd.mp4?s=7f3af5e6e3d627fb4269e80e1c6670b8a1c97a8e&profile_id=165&oauth2_token_id=57447761",
+    location: "Brand Commercial"
+  },
+  {
+    id: 3,
+    title: "Vertex Corporate Summit",
+    category: "corporate",
+    image: "/assets/portfolio_corporate.png",
+    videoUrl: "https://player.vimeo.com/external/510850877.sd.mp4?s=7d6c1f03f7e6f6630f907e5c54c25f46a2a5ef5c&profile_id=165&oauth2_token_id=57447761",
+    location: "Cairo, Egypt"
+  },
+  {
+    id: 4,
+    title: "Coastline Drone Sweep",
+    category: "corporate", // also fits drone, mapping to corporate/bts
+    image: "/assets/portfolio_drone.png",
+    videoUrl: "https://player.vimeo.com/external/409217109.sd.mp4?s=dcf53bdf906d44a2c534433de2022834b9d07371&profile_id=165&oauth2_token_id=57447761",
+    location: "California, USA"
+  },
+  {
+    id: 5,
+    title: "Behind The Scenes: Alexa Rig",
+    category: "bts",
+    image: "/assets/about_camera.png",
+    videoUrl: "https://player.vimeo.com/external/454523910.sd.mp4?s=f52fa54d7f5817d7bbf1176b92131976269ebc26&profile_id=165&oauth2_token_id=57447761",
+    location: "Studio BTS"
+  }
+];
+---
+
+<section id="portfolio" class="relative py-32 bg-brand-matte overflow-hidden font-sans border-t border-brand-charcoal/20">
+  <div class="max-w-7xl mx-auto px-6 md:px-12 w-full">
+    
+    <!-- Section Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-16 select-none">
+      <div>
+        <span class="text-xs tracking-[0.4em] uppercase text-brand-gold font-semibold mb-4 block" id="portfolio-tag">
+          Portfolio
+        </span>
+        <h2 class="font-serif text-3xl md:text-5xl font-bold text-brand-ivory" id="portfolio-title">
+          Selected Works
+        </h2>
+      </div>
+
+      <!-- Categories Filter -->
+      <div class="flex flex-wrap gap-3 md:gap-4" id="portfolio-filters">
+        {categories.map((cat) => (
+          <button
+            class={`filter-btn px-4 py-2 border text-xs tracking-widest uppercase transition-all duration-300 ${cat.id === 'all' ? 'border-brand-gold text-brand-gold active' : 'border-brand-charcoal text-brand-ivory/60 hover:border-brand-gold/40 hover:text-brand-ivory'}`}
+            data-filter={cat.id}
+          >
+            {cat.label}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Portfolio Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="portfolio-grid">
+      {portfolioItems.map((item) => (
+        <div
+          class="gallery-item group relative overflow-hidden bg-brand-charcoal/30 border border-brand-charcoal aspect-[16/10]"
+          data-category={item.category}
+          data-video={item.videoUrl}
+          data-title={item.title}
+          data-cursor-text="PLAY"
+        >
+          <!-- Thumbnail Image -->
+          <img
+            src={item.image}
+            alt={item.title}
+            class="portfolio-img absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105 z-10"
+            loading="lazy"
+          />
+
+          <!-- Silent Video Loop on Hover (preloaded on mouseenter) -->
+          <video
+            class="portfolio-video absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500 z-15"
+            loop
+            muted
+            playsinline
+          ></video>
+
+          <!-- Shadow Overlay -->
+          <div class="absolute inset-0 bg-gradient-to-t from-brand-matte via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-300 z-20"></div>
+
+          <!-- Hover border line -->
+          <div class="absolute inset-4 border border-brand-gold/0 group-hover:border-brand-gold/30 transition-all duration-500 z-30 pointer-events-none"></div>
+
+          <!-- Text details / Play icon -->
+          <div class="absolute inset-0 p-6 md:p-8 flex flex-col justify-between z-30">
+            <!-- Top Location Tag -->
+            <span class="self-start text-[9px] tracking-widest uppercase text-brand-champagne/70 bg-brand-matte/60 backdrop-blur-sm px-2.5 py-1 border border-brand-charcoal/50">
+              {item.location}
+            </span>
+
+            <!-- Bottom Title and play indicator -->
+            <div class="flex justify-between items-end">
+              <div>
+                <span class="text-[9px] tracking-[0.2em] uppercase text-brand-gold font-semibold mb-1 block">
+                  {item.category}
+                </span>
+                <h3 class="font-serif text-lg md:text-xl font-bold text-brand-ivory group-hover:text-brand-gold transition-colors duration-300">
+                  {item.title}
+                </h3>
+              </div>
+
+              <!-- Play Indicator -->
+              <div class="w-10 h-10 rounded-full bg-brand-gold text-brand-matte flex items-center justify-center scale-90 group-hover:scale-100 transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(199,167,106,0.4)]">
+                <Play class="w-4 h-4 fill-current ml-0.5" />
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Lightbox Modal -->
+<div
+  id="lightbox"
+  class="fixed inset-0 bg-brand-matte/95 backdrop-blur-md z-[100] hidden items-center justify-center p-4 md:p-12 select-none"
+>
+  <!-- Close Button -->
+  <button
+    id="lightbox-close"
+    class="absolute top-6 right-6 w-12 h-12 flex items-center justify-center border border-brand-charcoal text-brand-ivory hover:border-brand-gold hover:text-brand-gold rounded-full transition-all duration-300 z-[110]"
+    aria-label="Close Lightbox"
+  >
+    <X class="w-6 h-6" />
+  </button>
+
+  <!-- Video Container -->
+  <div class="w-full max-w-5xl aspect-video bg-black relative border border-brand-charcoal/80" id="lightbox-container">
+    <video
+      id="lightbox-player"
+      class="w-full h-full object-contain"
+      controls
+      autoplay
+      playsinline
+    ></video>
+    <div class="absolute bottom-[-40px] left-0 right-0 flex justify-between items-center text-xs tracking-wider">
+      <span id="lightbox-title" class="font-serif text-brand-gold text-sm font-semibold"></span>
+      <span class="text-brand-ivory/50 uppercase text-[10px]">RADY Cinematic Experience</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // --- HUD Updates ---
+  ScrollTrigger.create({
+    trigger: '#portfolio',
+    start: 'top center',
+    end: 'bottom center',
+    onEnter: () => {
+      window.dispatchEvent(new CustomEvent('hudUpdate', {
+        detail: { iso: '80', shutter: '1/250', fps: '24', aperture: '8.0', wb: '5600K' }
+      }));
+    },
+    onEnterBack: () => {
+      window.dispatchEvent(new CustomEvent('hudUpdate', {
+        detail: { iso: '80', shutter: '1/250', fps: '24', aperture: '8.0', wb: '5600K' }
+      }));
+    }
+  });
+
+  // --- ScrollTrigger reveals ---
+  gsap.fromTo('#portfolio-tag', { opacity: 0, y: 15 }, {
+    opacity: 1,
+    y: 0,
+    duration: 0.8,
+    scrollTrigger: { trigger: '#portfolio-tag', start: 'top 85%' }
+  });
+
+  gsap.fromTo('#portfolio-title', { opacity: 0, y: 20 }, {
+    opacity: 1,
+    y: 0,
+    duration: 1,
+    scrollTrigger: { trigger: '#portfolio-title', start: 'top 85%' }
+  });
+
+  gsap.fromTo('#portfolio-filters', { opacity: 0, y: 15 }, {
+    opacity: 1,
+    y: 0,
+    duration: 1,
+    scrollTrigger: { trigger: '#portfolio-filters', start: 'top 85%' }
+  });
+
+  // Grid items reveal
+  gsap.fromTo('.gallery-item', 
+    { opacity: 0, y: 40 },
+    {
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      stagger: 0.15,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '#portfolio-grid',
+        start: 'top 75%'
+      }
+    }
+  );
+
+  // --- Category Filtering ---
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const galleryItems = document.querySelectorAll('.gallery-item') as NodeListOf<HTMLElement>;
+
+  filterButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterButtons.forEach((b) => b.classList.remove('border-brand-gold', 'text-brand-gold', 'active'));
+      btn.classList.add('border-brand-gold', 'text-brand-gold', 'active');
+
+      const filterVal = btn.getAttribute('data-filter');
+
+      gsap.to(galleryItems, {
+        opacity: 0,
+        scale: 0.95,
+        duration: 0.25,
+        onComplete: () => {
+          galleryItems.forEach((item) => {
+            const cat = item.getAttribute('data-category');
+            if (filterVal === 'all' || cat === filterVal) {
+              item.classList.remove('hidden');
+              gsap.to(item, {
+                opacity: 1,
+                scale: 1,
+                duration: 0.45,
+                delay: 0.05
+              });
+            } else {
+              item.classList.add('hidden');
+            }
+          });
+        }
+      });
+    });
+  });
+
+  // --- Hover Video Playback & Lightbox ---
+  const items = document.querySelectorAll('.gallery-item');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxClose = document.getElementById('lightbox-close');
+  const lightboxPlayer = document.getElementById('lightbox-player') as HTMLVideoElement;
+  const lightboxTitle = document.getElementById('lightbox-title');
+  const lightboxContainer = document.getElementById('lightbox-container');
+
+  items.forEach((item) => {
+    const video = item.querySelector('.portfolio-video') as HTMLVideoElement;
+    const img = item.querySelector('.portfolio-img') as HTMLImageElement;
+    const videoSrc = item.getAttribute('data-video');
+    const title = item.getAttribute('data-title');
+
+    // Hover Video Setup
+    item.addEventListener('mouseenter', () => {
+      if (videoSrc && video.src === '') {
+        video.src = videoSrc;
+      }
+      video.play().then(() => {
+        gsap.to(video, { opacity: 1, duration: 0.4 });
+      }).catch((e) => console.log('Video autoplay blocked/interrupted'));
+    });
+
+    item.addEventListener('mouseleave', () => {
+      gsap.to(video, {
+        opacity: 0,
+        duration: 0.3,
+        onComplete: () => {
+          video.pause();
+        }
+      });
+    });
+
+    // Click Open Lightbox
+    item.addEventListener('click', () => {
+      if (!lightbox || !lightboxPlayer || !lightboxTitle || !videoSrc) return;
+
+      lightboxTitle.textContent = title;
+      lightboxPlayer.src = videoSrc;
+      
+      lightbox.classList.remove('hidden');
+      lightbox.classList.add('flex');
+      
+      // Pause smooth scrolling when lightbox is open
+      if (window.lenis) window.lenis.stop();
+
+      // GSAP Animation
+      gsap.fromTo(lightbox, { opacity: 0 }, { opacity: 1, duration: 0.4 });
+      gsap.fromTo(lightboxContainer, { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: 'power3.out', delay: 0.1 });
+    });
+  });
+
+  // Close Lightbox
+  const closeLightbox = () => {
+    if (!lightbox || !lightboxPlayer || !lightboxContainer) return;
+
+    gsap.to(lightboxContainer, {
+      scale: 0.9,
+      opacity: 0,
+      duration: 0.3,
+      ease: 'power2.in'
+    });
+
+    gsap.to(lightbox, {
+      opacity: 0,
+      duration: 0.4,
+      onComplete: () => {
+        lightbox.classList.add('hidden');
+        lightbox.classList.remove('flex');
+        lightboxPlayer.src = '';
+        if (window.lenis) window.lenis.start();
+      }
+    });
+  };
+
+  lightboxClose?.addEventListener('click', closeLightbox);
+  lightbox?.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+</script>

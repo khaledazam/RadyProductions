@@ -1,0 +1,350 @@
+---
+---
+<section id="experience" class="relative min-h-screen bg-brand-matte overflow-hidden flex items-center justify-center font-sans border-t border-brand-charcoal/20">
+  
+  <!-- Interactive Three.js Canvas Container -->
+  <cinematic-experience class="absolute inset-0 z-0 pointer-events-none" scroll-progress="0"></cinematic-experience>
+
+  <!-- Dark gradients to frame the scene -->
+  <div class="absolute inset-0 bg-gradient-to-b from-brand-matte via-transparent to-brand-matte pointer-events-none z-10"></div>
+  <div class="absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-brand-matte to-transparent pointer-events-none z-10"></div>
+  <div class="absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-brand-matte to-transparent pointer-events-none z-10"></div>
+
+  <!-- Content Overlay -->
+  <div class="max-w-4xl mx-auto px-6 text-center z-20 relative select-none">
+    <span class="text-xs tracking-[0.4em] uppercase text-brand-gold font-semibold mb-6 block" id="exp-tag">
+      Immersive Journey
+    </span>
+    
+    <h2 class="font-serif text-3xl md:text-6xl font-bold text-brand-ivory leading-tight mb-8" id="exp-title">
+      Step Into <br />
+      <span class="text-gold-gradient">The Cinematic Dimension</span>
+    </h2>
+
+    <p class="text-xs md:text-sm text-brand-champagne/70 leading-relaxed max-w-xl mx-auto mb-10" id="exp-desc">
+      Scroll through the viewport to witness our lens aperture react in real-time, pulling you through dynamic floating film archives and refracting gold lights.
+    </p>
+
+    <!-- Scroll Indicator badge -->
+    <div class="inline-flex items-center gap-3 px-4 py-2 border border-brand-gold/20 bg-brand-charcoal/20 backdrop-blur-md text-[10px] tracking-widest uppercase text-brand-gold" id="exp-badge">
+      <span class="w-1.5 h-1.5 rounded-full bg-brand-gold animate-ping"></span>
+      Scroll to Control 3D Scene
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // --- HUD Updates ---
+  ScrollTrigger.create({
+    trigger: '#experience',
+    start: 'top center',
+    end: 'bottom center',
+    onEnter: () => {
+      window.dispatchEvent(new CustomEvent('hudUpdate', {
+        detail: { iso: '320', shutter: '1/250', fps: '24', aperture: '1.2', wb: '5800K' }
+      }));
+    },
+    onEnterBack: () => {
+      window.dispatchEvent(new CustomEvent('hudUpdate', {
+        detail: { iso: '320', shutter: '1/250', fps: '24', aperture: '1.2', wb: '5800K' }
+      }));
+    }
+  });
+
+  // --- ScrollTrigger reveals for HTML overlay ---
+  gsap.fromTo('#exp-tag', { opacity: 0, y: 15 }, {
+    opacity: 1, y: 0, duration: 0.8,
+    scrollTrigger: { trigger: '#exp-tag', start: 'top 85%' }
+  });
+
+  gsap.fromTo('#exp-title', { opacity: 0, y: 20 }, {
+    opacity: 1, y: 0, duration: 1,
+    scrollTrigger: { trigger: '#exp-title', start: 'top 85%' }
+  });
+
+  gsap.fromTo('#exp-desc', { opacity: 0, y: 15 }, {
+    opacity: 1, y: 0, duration: 1,
+    scrollTrigger: { trigger: '#exp-desc', start: 'top 85%' }
+  });
+
+  gsap.fromTo('#exp-badge', { opacity: 0, scale: 0.9 }, {
+    opacity: 1, scale: 1, duration: 1,
+    scrollTrigger: { trigger: '#exp-badge', start: 'top 90%' }
+  });
+
+  // --- Scroll Link to Web Component ---
+  const experienceSection = document.getElementById('experience');
+  const threeElement = document.querySelector('cinematic-experience');
+
+  if (experienceSection && threeElement) {
+    ScrollTrigger.create({
+      trigger: experienceSection,
+      start: 'top bottom',
+      end: 'bottom top',
+      scrub: 0.5,
+      onUpdate: (self) => {
+        threeElement.setAttribute('scroll-progress', self.progress.toString());
+      }
+    });
+  }
+
+  // --- Cinematic Three.js Web Component ---
+  class CinematicExperience extends HTMLElement {
+    private renderer: any;
+    private scene: any;
+    private camera: any;
+    private blades: any[] = [];
+    private filmPlanes: any[] = [];
+    private pGeo: any;
+    private animFrameId: number | null = null;
+    private resizeHandler: any;
+    private scrollVal = 0;
+
+    static get observedAttributes() {
+      return ['scroll-progress'];
+    }
+
+    attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+      if (name === 'scroll-progress') {
+        this.scrollVal = parseFloat(newValue);
+      }
+    }
+
+    connectedCallback() {
+      window.addEventListener('loaderFinished', () => this.init());
+      if (!document.documentElement.classList.contains('loading-lock')) {
+        this.init();
+      }
+    }
+
+    async init() {
+      if (this.renderer) return;
+
+      try {
+        const THREE = await import('three');
+
+        // Scene
+        this.scene = new THREE.Scene();
+
+        // Camera
+        this.camera = new THREE.PerspectiveCamera(55, this.clientWidth / this.clientHeight, 0.1, 100);
+        this.camera.position.set(0, 0, 9);
+
+        // Renderer
+        this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        this.renderer.setSize(this.clientWidth, this.clientHeight);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.appendChild(this.renderer.domElement);
+
+        // --- 1. Custom 3D Aperture Blades ---
+        const apertureGroup = new THREE.Group();
+        this.scene.add(apertureGroup);
+
+        const bladeShape = new THREE.Shape();
+        bladeShape.moveTo(0, 0);
+        bladeShape.lineTo(1.2, 0.3);
+        bladeShape.lineTo(0.9, 0.9);
+        bladeShape.lineTo(0, 0.8);
+        bladeShape.closePath();
+
+        const bladeGeo = new THREE.ShapeGeometry(bladeShape);
+        const bladeMat = new THREE.MeshStandardMaterial({
+          color: 0x181818,
+          roughness: 0.3,
+          metalness: 0.85,
+          side: THREE.DoubleSide
+        });
+
+        // Instantiate 6 aperture blades in a ring
+        const numBlades = 6;
+        for (let i = 0; i < numBlades; i++) {
+          const bladeWrapper = new THREE.Group();
+          const angle = (i / numBlades) * Math.PI * 2;
+          
+          bladeWrapper.rotation.z = angle;
+          
+          const bladeMesh = new THREE.Mesh(bladeGeo, bladeMat);
+          // Position blade offset from center
+          bladeMesh.position.set(0.65, 0.35, 0);
+          bladeWrapper.add(bladeMesh);
+          
+          apertureGroup.add(bladeWrapper);
+          this.blades.push(bladeMesh);
+        }
+
+        // Add a gold rim around the aperture
+        const ringGeo = new THREE.RingGeometry(1.6, 1.7, 64);
+        const ringMat = new THREE.MeshStandardMaterial({
+          color: 0xC7A76A,
+          roughness: 0.1,
+          metalness: 0.9,
+          side: THREE.DoubleSide
+        });
+        const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+        apertureGroup.add(ringMesh);
+
+        // --- 2. Floating 3D Film Strips ---
+        const filmGroup = new THREE.Group();
+        this.scene.add(filmGroup);
+
+        const imageAssets = [
+          '/assets/portfolio_wedding.png',
+          '/assets/portfolio_commercial.png',
+          '/assets/portfolio_corporate.png',
+          '/assets/portfolio_drone.png',
+          '/assets/about_camera.png'
+        ];
+
+        const textureLoader = new THREE.TextureLoader();
+        const filmWidth = 2.4;
+        const filmHeight = 1.5;
+        const filmGeo = new THREE.PlaneGeometry(filmWidth, filmHeight);
+
+        // Arrange film planes in a spiral curve (helix) around camera z-axis
+        imageAssets.forEach((asset, idx) => {
+          const tex = textureLoader.load(asset);
+          // Film strip frame texture containing holes borders
+          const mat = new THREE.MeshPhysicalMaterial({
+            map: tex,
+            roughness: 0.2,
+            metalness: 0.1,
+            side: THREE.DoubleSide,
+            clearcoat: 0.8
+          });
+
+          const plane = new THREE.Mesh(filmGeo, mat);
+
+          // Position in space
+          const angle = (idx / imageAssets.length) * Math.PI * 2;
+          const radius = 4.5;
+          plane.position.x = Math.sin(angle) * radius;
+          plane.position.y = Math.cos(angle) * radius * 0.7;
+          plane.position.z = (idx - imageAssets.length / 2) * 2;
+
+          // Rotate plane to look towards center
+          plane.lookAt(0, 0, plane.position.z - 2);
+
+          filmGroup.add(plane);
+          this.filmPlanes.push(plane);
+        });
+
+        // --- 3. Floating Gold Particles ---
+        const pCount = 300;
+        const positions = new Float32Array(pCount * 3);
+        const offsets = new Float32Array(pCount);
+        
+        for (let i = 0; i < pCount * 3; i += 3) {
+          positions[i] = (Math.random() - 0.5) * 15;
+          positions[i + 1] = (Math.random() - 0.5) * 10;
+          positions[i + 2] = (Math.random() - 0.5) * 12;
+          offsets[i/3] = Math.random() * 10;
+        }
+
+        this.pGeo = new THREE.BufferGeometry();
+        this.pGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+        const pMat = new THREE.PointsMaterial({
+          size: 0.07,
+          color: 0xC7A76A,
+          transparent: true,
+          opacity: 0.6,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false
+        });
+
+        const pSystem = new THREE.Points(this.pGeo, pMat);
+        this.scene.add(pSystem);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.35);
+        this.scene.add(ambientLight);
+
+        const pointLight1 = new THREE.PointLight(0xC7A76A, 12, 25);
+        pointLight1.position.set(4, 4, 3);
+        this.scene.add(pointLight1);
+
+        const pointLight2 = new THREE.PointLight(0xEBD9B5, 8, 25);
+        pointLight2.position.set(-4, -4, 4);
+        this.scene.add(pointLight2);
+
+        // Mouse Parallax variables
+        let mouseX = 0;
+        let mouseY = 0;
+        window.addEventListener('mousemove', (e: MouseEvent) => {
+          mouseX = (e.clientX - window.innerWidth / 2) * 0.0004;
+          mouseY = (e.clientY - window.innerHeight / 2) * 0.0004;
+        });
+
+        // Animation Loop
+        const clock = new THREE.Clock();
+        let interpolatedScroll = 0;
+
+        const animate = () => {
+          this.animFrameId = requestAnimationFrame(animate);
+
+          const time = clock.getElapsedTime();
+
+          // Smooth interpolation for scroll attributes
+          interpolatedScroll += (this.scrollVal - interpolatedScroll) * 0.07;
+
+          // 1. Rotate film helical group based on scroll progress
+          filmGroup.rotation.z = interpolatedScroll * Math.PI * 1.5;
+          filmGroup.position.z = interpolatedScroll * 5;
+
+          // 2. Adjust Aperture blades (rotate them inside their wrappers)
+          // As scroll increases, aperture closes then opens
+          const apertureClosureAngle = (1 - Math.abs(Math.sin(interpolatedScroll * Math.PI))) * 0.35;
+          this.blades.forEach((blade) => {
+            blade.rotation.z = apertureClosureAngle;
+          });
+
+          // Parallax camera adjustment
+          this.camera.position.x += (mouseX * 5 - this.camera.position.x) * 0.05;
+          this.camera.position.y += (-mouseY * 5 - this.camera.position.y) * 0.05;
+          this.camera.lookAt(0, 0, 0);
+
+          // Animate particles
+          const posArr = this.pGeo.attributes.position.array as Float32Array;
+          for (let i = 0; i < pCount; i++) {
+            const index = i * 3;
+            // slow drifting
+            posArr[index + 1] -= 0.003;
+            posArr[index] += Math.sin(time * 0.2 + offsets[i]) * 0.001;
+
+            if (posArr[index + 1] < -6) posArr[index + 1] = 6;
+          }
+          this.pGeo.attributes.position.needsUpdate = true;
+
+          this.renderer.render(this.scene, this.camera);
+        };
+
+        animate();
+
+        // Responsive handling
+        this.resizeHandler = () => {
+          if (!this.renderer || !this.camera) return;
+          this.camera.aspect = this.clientWidth / this.clientHeight;
+          this.camera.updateProjectionMatrix();
+          this.renderer.setSize(this.clientWidth, this.clientHeight);
+        };
+        window.addEventListener('resize', this.resizeHandler);
+
+      } catch (err) {
+        console.error("Three.js Experience setup error:", err);
+      }
+    }
+
+    disconnectedCallback() {
+      if (this.animFrameId) cancelAnimationFrame(this.animFrameId);
+      if (this.resizeHandler) window.removeEventListener('resize', this.resizeHandler);
+      if (this.renderer) this.renderer.dispose();
+    }
+  }
+
+  customElements.define('cinematic-experience', CinematicExperience);
+</script>

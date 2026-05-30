@@ -1,0 +1,140 @@
+---
+---
+
+<div id="custom-cursor" class="fixed inset-0 pointer-events-none z-[10000] hidden md:block mix-blend-difference">
+  <!-- The main tiny dot -->
+  <div id="cursor-dot" class="absolute w-2 h-2 bg-brand-gold rounded-full top-0 left-0 -translate-x-1/2 -translate-y-1/2 transition-transform duration-300"></div>
+  
+  <!-- The expanding outer ring / text container -->
+  <div id="cursor-ring" class="absolute w-10 h-10 border border-brand-gold/50 rounded-full top-0 left-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center transition-[width,height,border-color,background-color] duration-300 ease-out">
+    <span id="cursor-text" class="text-[9px] font-bold tracking-widest text-brand-matte uppercase opacity-0 transition-opacity duration-300 transform scale-75"></span>
+  </div>
+</div>
+
+<script>
+  import { gsap } from 'gsap';
+
+  // Only init on desktop
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+  if (!isTouchDevice) {
+    const cursor = document.getElementById('custom-cursor');
+    const dot = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    const textEl = document.getElementById('cursor-text');
+
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let ringX = mouseX;
+    let ringY = mouseY;
+    let velX = 0;
+    let velY = 0;
+    let isHovering = false;
+    let isMagnetic = false;
+
+    // Quick setters for performance
+    const setDotX = gsap.quickSetter(dot, "x", "px");
+    const setDotY = gsap.quickSetter(dot, "y", "px");
+    const setRingX = gsap.quickSetter(ring, "x", "px");
+    const setRingY = gsap.quickSetter(ring, "y", "px");
+    const setRingScaleX = gsap.quickSetter(ring, "scaleX");
+    const setRingScaleY = gsap.quickSetter(ring, "scaleY");
+    const setRingRotation = gsap.quickSetter(ring, "rotation", "deg");
+
+    window.addEventListener('mousemove', (e) => {
+      // Calculate velocity for stretching
+      velX = e.clientX - mouseX;
+      velY = e.clientY - mouseY;
+      
+      if (!isMagnetic) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        setDotX(mouseX);
+        setDotY(mouseY);
+      }
+    });
+
+    // Render Loop for Spring physics on the ring and stretch
+    gsap.ticker.add(() => {
+      if (!isMagnetic) {
+        // Spring lerp for ring
+        ringX += (mouseX - ringX) * 0.15;
+        ringY += (mouseY - ringY) * 0.15;
+        
+        setRingX(ringX);
+        setRingY(ringY);
+
+        if (!isHovering) {
+          // Calculate stretch based on velocity
+          const speed = Math.sqrt(velX*velX + velY*velY);
+          const stretch = Math.min(speed * 0.005, 0.5); // Max stretch 1.5x
+          
+          const angle = Math.atan2(velY, velX) * (180 / Math.PI);
+          
+          setRingScaleX(1 + stretch);
+          setRingScaleY(1 - stretch * 0.5);
+          setRingRotation(angle);
+        } else {
+          setRingScaleX(1);
+          setRingScaleY(1);
+          setRingRotation(0);
+        }
+      }
+
+      // Decay velocity
+      velX *= 0.8;
+      velY *= 0.8;
+    });
+
+    // Handle Scroll stretching (vertical)
+    let lastScroll = window.scrollY;
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY;
+      const scrollSpeed = currentScroll - lastScroll;
+      velY += scrollSpeed * 0.5;
+      lastScroll = currentScroll;
+    }, { passive: true });
+
+    // Handle Interactive States
+    const bindInteractiveElements = () => {
+      const interactives = document.querySelectorAll('a, button, [data-cursor], [data-cursor-text]');
+      
+      interactives.forEach(el => {
+        el.addEventListener('mouseenter', (e) => {
+          isHovering = true;
+          
+          const text = el.getAttribute('data-cursor-text');
+          if (text) {
+            // Text cursor state (PLAY, VIEW, OPEN)
+            gsap.to(ring, { width: 80, height: 80, backgroundColor: '#C7A76A', borderColor: 'transparent', duration: 0.3 });
+            gsap.to(dot, { scale: 0, duration: 0.2 });
+            if (textEl) {
+              textEl.textContent = text;
+              gsap.to(textEl, { opacity: 1, scale: 1, duration: 0.3 });
+            }
+          } else {
+            // Standard interactive hover (Expand ring, hide dot)
+            gsap.to(ring, { width: 60, height: 60, backgroundColor: 'rgba(199,167,106,0.1)', borderColor: '#C7A76A', duration: 0.3 });
+            gsap.to(dot, { scale: 0, duration: 0.2 });
+          }
+        });
+
+        el.addEventListener('mouseleave', () => {
+          isHovering = false;
+          // Revert to default
+          gsap.to(ring, { width: 40, height: 40, backgroundColor: 'transparent', borderColor: 'rgba(199,167,106,0.5)', duration: 0.3 });
+          gsap.to(dot, { scale: 1, duration: 0.2 });
+          if (textEl) {
+            gsap.to(textEl, { opacity: 0, scale: 0.75, duration: 0.2 });
+          }
+        });
+      });
+    };
+
+    // Re-bind when new elements might be added or on load
+    bindInteractiveElements();
+    
+    // Also listen to Astro page loads if using ViewTransitions, or just once here.
+    window.addEventListener('loaderFinished', bindInteractiveElements);
+  }
+</script>

@@ -1,0 +1,135 @@
+---
+const images = [
+  "/assets/portfolio_wedding.png",
+  "/assets/portfolio_commercial.png",
+  "/assets/portfolio_corporate.png",
+  "/assets/portfolio_drone.png",
+  "/assets/about_camera.png",
+  // Repeat for infinite effect
+  "/assets/portfolio_wedding.png",
+  "/assets/portfolio_commercial.png",
+  "/assets/portfolio_corporate.png",
+  "/assets/portfolio_drone.png",
+  "/assets/about_camera.png",
+];
+---
+
+<section id="scene-filmstrip" class="relative min-h-screen bg-brand-matte w-full overflow-hidden flex flex-col justify-center py-20">
+  
+  <!-- Section Title Overlay -->
+  <div class="absolute top-32 w-full text-center z-20 pointer-events-none">
+    <h2 class="font-serif text-3xl md:text-5xl font-bold text-brand-ivory opacity-80 mix-blend-difference" id="filmstrip-title">
+      The Final Cinematic Result
+    </h2>
+  </div>
+
+  <!-- Film Grain Overlay -->
+  <div class="absolute inset-0 pointer-events-none z-30 opacity-20 mix-blend-overlay bg-[url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Dissolve_Noise_Texture.png')] animate-grain"></div>
+
+  <!-- Film Strip Track -->
+  <div class="w-[200%] md:w-[150%] flex gap-4 md:gap-8 overflow-visible relative z-10" id="film-track">
+    {images.map((src, index) => (
+      <div 
+        class="film-frame relative w-[60vw] md:w-[35vw] aspect-[16/9] flex-shrink-0 cursor-none overflow-hidden border-2 border-brand-charcoal/50 hover:border-brand-gold transition-colors duration-500 group"
+        data-cursor-text="PLAY"
+      >
+        <!-- Frame Perforations (Film Look) -->
+        <div class="absolute top-0 left-0 right-0 h-4 flex justify-between px-2 items-center bg-black/80 z-20">
+          {[...Array(10)].map(() => <div class="w-2 h-1.5 bg-brand-charcoal/40 rounded-sm"></div>)}
+        </div>
+        
+        <img 
+          src={src} 
+          alt={`Cinematic Frame ${index}`} 
+          class="w-full h-full object-cover filter grayscale-[30%] contrast-125 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
+          loading="lazy"
+        />
+
+        <div class="absolute bottom-0 left-0 right-0 h-4 flex justify-between px-2 items-center bg-black/80 z-20">
+          {[...Array(10)].map(() => <div class="w-2 h-1.5 bg-brand-charcoal/40 rounded-sm"></div>)}
+        </div>
+
+        <div class="absolute inset-0 bg-brand-gold/10 opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-500 z-10 pointer-events-none"></div>
+      </div>
+    ))}
+  </div>
+
+  <div class="absolute bottom-20 w-full text-center z-20 pointer-events-none">
+    <p class="text-xs tracking-[0.4em] uppercase text-brand-champagne/60">
+      We transform memories into cinematic experiences.
+    </p>
+  </div>
+</section>
+
+<style>
+  @keyframes grain {
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-5%, -10%); }
+    20% { transform: translate(-15%, 5%); }
+    30% { transform: translate(7%, -25%); }
+    40% { transform: translate(-5%, 25%); }
+    50% { transform: translate(-15%, 10%); }
+    60% { transform: translate(15%, 0%); }
+    70% { transform: translate(0%, 15%); }
+    80% { transform: translate(3%, 35%); }
+    90% { transform: translate(-10%, 10%); }
+  }
+  .animate-grain {
+    animation: grain 1s steps(10) infinite;
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const section = document.getElementById('scene-filmstrip');
+  const track = document.getElementById('film-track');
+  const frames = document.querySelectorAll('.film-frame');
+
+  if (section && track) {
+    // 1. Scene Entry HUD Update
+    ScrollTrigger.create({
+      trigger: section,
+      start: "top center",
+      onEnter: () => {
+        window.dispatchEvent(new CustomEvent('hudUpdate', {
+          detail: { iso: '100', shutter: '1/48', fps: '24', aperture: '1.4', wb: '5600K' }
+        }));
+      },
+      onEnterBack: () => {
+        window.dispatchEvent(new CustomEvent('hudUpdate', {
+          detail: { iso: '100', shutter: '1/48', fps: '24', aperture: '1.4', wb: '5600K' }
+        }));
+      }
+    });
+
+    // 2. Infinite Scroll Animation
+    let speed = 1;
+    let trackX = 0;
+    
+    // Slow down on hover
+    frames.forEach(frame => {
+      frame.addEventListener('mouseenter', () => gsap.to((window as any), { speed: 0.1, duration: 0.5 }));
+      frame.addEventListener('mouseleave', () => gsap.to((window as any), { speed: 1, duration: 0.5 }));
+    });
+
+    // Animate the track infinitely
+    gsap.ticker.add(() => {
+      trackX -= speed * 1.5;
+      // Reset position to create infinite loop
+      if (trackX <= -(track.scrollWidth / 2)) {
+        trackX = 0;
+      }
+      gsap.set(track, { x: trackX });
+    });
+
+    // 3. Reveal Animation on Scroll
+    gsap.fromTo('#filmstrip-title', { opacity: 0, scale: 0.9 }, {
+      opacity: 0.8, scale: 1, duration: 1,
+      scrollTrigger: { trigger: section, start: "top 70%" }
+    });
+  }
+</script>

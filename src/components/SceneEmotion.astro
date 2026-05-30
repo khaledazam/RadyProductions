@@ -1,0 +1,75 @@
+---
+---
+
+<section id="scene-emotion" class="relative min-h-[150vh] bg-brand-matte w-full overflow-hidden flex flex-col justify-end pb-32">
+  
+  <div class="sticky top-0 h-screen flex flex-col items-center justify-center p-6 text-center select-none z-10">
+    
+    <!-- Testimonial Reveal -->
+    <div class="max-w-4xl mx-auto space-y-12 opacity-0" id="emotion-content">
+      <p class="font-serif text-2xl md:text-5xl text-brand-champagne/90 leading-relaxed italic">
+        "It wasn't just a video. It was a masterpiece that captured the very essence of our souls. We cried watching it."
+      </p>
+      
+      <div class="flex flex-col items-center gap-2">
+        <span class="text-xs tracking-[0.3em] uppercase text-brand-gold font-bold">Sarah & James</span>
+        <span class="text-[10px] tracking-widest uppercase text-brand-charcoal font-medium">Tuscany Wedding</span>
+      </div>
+    </div>
+
+    <!-- The End Message -->
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0" id="emotion-end">
+      <h2 class="font-serif text-5xl md:text-8xl text-brand-ivory font-bold tracking-tight">
+        The story lives <span class="text-gold-gradient italic">forever.</span>
+      </h2>
+    </div>
+
+  </div>
+
+  <!-- Cinematic Fade to Black Overlay -->
+  <div class="absolute inset-0 bg-black pointer-events-none opacity-0 z-50" id="cinematic-black"></div>
+
+</section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const section = document.getElementById('scene-emotion');
+  
+  if (section) {
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 1,
+        onEnter: () => {
+          // Update HUD for Emotional Scene (Soft light, slow motion feel)
+          window.dispatchEvent(new CustomEvent('hudUpdate', {
+            detail: { iso: '800', shutter: '1/48', fps: '60', aperture: '1.2', wb: '4200K' }
+          }));
+        },
+        onEnterBack: () => {
+          window.dispatchEvent(new CustomEvent('hudUpdate', {
+            detail: { iso: '800', shutter: '1/48', fps: '60', aperture: '1.2', wb: '4200K' }
+          }));
+        }
+      }
+    });
+
+    // 1. Fade in Testimonial
+    tl.to('#emotion-content', { opacity: 1, y: -30, duration: 2 }, 0);
+    
+    // 2. Fade out Testimonial
+    tl.to('#emotion-content', { opacity: 0, y: -60, duration: 1.5 }, 3);
+
+    // 3. Fade in The End Message
+    tl.to('#emotion-end', { opacity: 1, scale: 1.05, duration: 2 }, 4.5);
+    
+    // 4. Ultimate Cinematic Fade to Black (End of page)
+    tl.to('#cinematic-black', { opacity: 1, duration: 2 }, 6);
+  }
+</script>

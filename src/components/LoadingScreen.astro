@@ -1,0 +1,252 @@
+---
+---
+<div id="loader" class="fixed inset-0 bg-brand-matte z-[9999] flex flex-col justify-center items-center select-none cursor-default font-sans overflow-hidden">
+  
+  <!-- Subtle Gold Light Glow -->
+  <div id="loader-glow" class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--color-brand-gold)_0%,_transparent_50%)] opacity-0 mix-blend-screen pointer-events-none scale-50"></div>
+
+  <!-- Cinematic Particles (CSS generated via JS) -->
+  <div id="loader-particles" class="absolute inset-0 pointer-events-none opacity-0"></div>
+
+  <!-- Center: Elegant Brand Logo -->
+  <div id="loader-logo-wrapper" class="relative z-10 flex flex-col items-center select-none text-center transform scale-90 opacity-0">
+    <!-- SVG Lens Logo Mark -->
+    <svg class="w-24 h-24 md:w-32 md:h-32 mb-6 text-brand-gold drop-shadow-[0_0_15px_rgba(199,167,106,0.5)]" id="loader-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="1.5" stroke-dasharray="282" stroke-dashoffset="282" id="svg-c1"/>
+      <circle cx="50" cy="50" r="20" stroke="currentColor" stroke-width="1.5" stroke-dasharray="125" stroke-dashoffset="125" id="svg-c2"/>
+      <!-- Aperture Blades -->
+      <g id="svg-blades" opacity="0">
+        <path d="M50 30 L67 40" stroke="currentColor" stroke-width="1"/>
+        <path d="M67 40 L67 60" stroke="currentColor" stroke-width="1"/>
+        <path d="M67 60 L50 70" stroke="currentColor" stroke-width="1"/>
+        <path d="M50 70 L33 60" stroke="currentColor" stroke-width="1"/>
+        <path d="M33 60 L33 40" stroke="currentColor" stroke-width="1"/>
+        <path d="M33 40 L50 30" stroke="currentColor" stroke-width="1"/>
+      </g>
+    </svg>
+    
+    <div class="relative overflow-hidden">
+      <!-- Metallic sweep effect wrapper -->
+      <div id="loader-text-sweep" class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white to-transparent opacity-30 mix-blend-overlay z-20 w-[200%]"></div>
+      <h1 id="loader-logo" class="font-serif text-5xl md:text-8xl text-gold-gradient font-bold tracking-wider">
+        RADY
+      </h1>
+    </div>
+    
+    <p id="loader-tagline" class="text-[10px] md:text-xs tracking-[0.4em] uppercase text-brand-champagne mt-4 opacity-0">
+      Cinematic Excellence
+    </p>
+  </div>
+
+  <!-- Bottom: Progress bar -->
+  <div class="absolute bottom-10 left-10 right-10 md:bottom-16 md:left-16 md:right-16 flex flex-col items-center">
+    <div class="font-serif text-3xl md:text-5xl text-brand-gold/90 font-light flex items-baseline gap-1 mb-4 opacity-0" id="loader-counter-container">
+      <span id="loader-counter">00</span>
+      <span class="text-xs text-brand-gold/50 font-sans">%</span>
+    </div>
+    <div class="w-full md:w-1/3 h-[1px] bg-brand-charcoal/50 relative overflow-hidden opacity-0" id="loader-progress-bar">
+      <div id="loader-progress" class="absolute left-0 top-0 bottom-0 bg-brand-gold w-0 shadow-[0_0_10px_#C7A76A]"></div>
+    </div>
+  </div>
+
+  <!-- Enter Button (Required to bypass browser audio autoplay block) -->
+  <button id="loader-enter" class="absolute bottom-20 left-1/2 -translate-x-1/2 px-10 py-4 border border-brand-gold text-brand-gold font-sans font-medium text-xs tracking-[0.3em] uppercase opacity-0 pointer-events-none hover:bg-brand-gold hover:text-brand-matte transition-colors duration-500 z-50">
+    Enter Experience
+  </button>
+</div>
+
+<script>
+  import { gsap } from 'gsap';
+
+  // Generate particles
+  const particleContainer = document.getElementById('loader-particles');
+  if (particleContainer) {
+    for (let i = 0; i < 40; i++) {
+      const p = document.createElement('div');
+      p.className = 'absolute rounded-full bg-brand-gold mix-blend-screen';
+      const size = Math.random() * 3 + 1;
+      p.style.width = `${size}px`;
+      p.style.height = `${size}px`;
+      p.style.left = `${Math.random() * 100}%`;
+      p.style.top = `${Math.random() * 100}%`;
+      p.style.opacity = `${Math.random() * 0.5 + 0.1}`;
+      p.style.filter = `blur(${Math.random() * 2}px)`;
+      particleContainer.appendChild(p);
+      
+      gsap.to(p, {
+        y: `-=${Math.random() * 100 + 50}`,
+        x: `+=${Math.random() * 50 - 25}`,
+        rotation: Math.random() * 360,
+        duration: Math.random() * 3 + 2,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut'
+      });
+    }
+  }
+
+  const loader = document.getElementById('loader');
+  const glow = document.getElementById('loader-glow');
+  const particles = document.getElementById('loader-particles');
+  const wrapper = document.getElementById('loader-logo-wrapper');
+  const svgC1 = document.getElementById('svg-c1');
+  const svgC2 = document.getElementById('svg-c2');
+  const blades = document.getElementById('svg-blades');
+  const textSweep = document.getElementById('loader-text-sweep');
+  const counterContainer = document.getElementById('loader-counter-container');
+  const progressBar = document.getElementById('loader-progress-bar');
+  const counter = document.getElementById('loader-counter');
+  const progress = document.getElementById('loader-progress');
+  const tagline = document.getElementById('loader-tagline');
+  const svgLogo = document.getElementById('loader-svg');
+  const enterBtn = document.getElementById('loader-enter');
+
+  if (loader) {
+    document.documentElement.classList.add('loading-lock');
+    window.scrollTo(0, 0);
+
+    const playShutterSound = () => {
+      try {
+        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        
+        // 1. First mechanical click
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.type = 'square';
+        osc1.frequency.setValueAtTime(150, ctx.currentTime);
+        osc1.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.05);
+        gain1.gain.setValueAtTime(1, ctx.currentTime);
+        gain1.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        osc1.start(ctx.currentTime);
+        osc1.stop(ctx.currentTime + 0.05);
+
+        // 2. High frequency noise burst
+        const bufferSize = ctx.sampleRate * 0.1;
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+        const noiseFilter = ctx.createBiquadFilter();
+        noiseFilter.type = 'highpass';
+        noiseFilter.frequency.value = 1200;
+        const noiseGain = ctx.createGain();
+        noiseGain.gain.setValueAtTime(0.8, ctx.currentTime);
+        noiseGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+        noise.connect(noiseFilter);
+        noiseFilter.connect(noiseGain);
+        noiseGain.connect(ctx.destination);
+        noise.start(ctx.currentTime);
+
+        // 3. Second mechanical click
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = 'square';
+        osc2.frequency.setValueAtTime(120, ctx.currentTime + 0.08);
+        osc2.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.13);
+        gain2.gain.setValueAtTime(1.2, ctx.currentTime + 0.08);
+        gain2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.13);
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.start(ctx.currentTime + 0.08);
+        osc2.stop(ctx.currentTime + 0.13);
+      } catch (e) {
+        console.warn('Audio API failed:', e);
+      }
+    };
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        document.documentElement.classList.remove('loading-lock');
+        window.dispatchEvent(new Event('loaderFinished'));
+        loader.style.pointerEvents = 'none';
+        loader.remove(); 
+      }
+    });
+
+    // 1. Initial fade in of glow and wrapper
+    tl.to(glow, { opacity: 0.15, scale: 1.5, duration: 2, ease: 'power2.out' }, 0);
+    tl.to(particles, { opacity: 1, duration: 2 }, 0);
+    tl.to(wrapper, { opacity: 1, scale: 1, duration: 1.5, ease: 'power3.out' }, 0.5);
+
+    // 2. SVG Drawing
+    tl.to([svgC1, svgC2], { strokeDashoffset: 0, duration: 1.5, stagger: 0.2, ease: 'power2.inOut' }, 0.5);
+    tl.to(blades, { opacity: 1, duration: 0.5 }, 1.5);
+    tl.fromTo(blades, { rotation: -45, transformOrigin: "50% 50%" }, { rotation: 0, duration: 1, ease: "power2.out" }, 1.5);
+
+    // 3. Counter and Progress
+    tl.to([counterContainer, progressBar], { opacity: 1, duration: 0.5 }, 1);
+    
+    const countObj = { value: 0 };
+    tl.to(countObj, {
+      value: 100,
+      duration: 2,
+      ease: 'power1.inOut',
+      onUpdate: () => {
+        const val = Math.floor(countObj.value);
+        if (counter) counter.textContent = val < 10 ? `0${val}` : `${val}`;
+        if (progress) progress.style.width = `${val}%`;
+      }
+    }, 1);
+
+    // 4. Tagline & Metallic Sweep
+    tl.to(tagline, { opacity: 1, y: -5, duration: 1, ease: 'power2.out' }, 1.5);
+    tl.to(textSweep, { x: '100%', duration: 1.5, ease: 'power2.inOut' }, 1.5);
+
+    // 5. Hide counter/progress and show Enter button
+    tl.to([counterContainer, progressBar], { opacity: 0, duration: 0.4 }, 3.0);
+    tl.to(enterBtn, { opacity: 1, pointerEvents: 'auto', duration: 0.5 }, 3.2);
+
+    // PAUSE HERE to wait for user interaction (Fixes Browser Autoplay Block)
+    tl.addPause(3.5);
+
+    // When user clicks Enter:
+    if (enterBtn) {
+      enterBtn.addEventListener('click', () => {
+        // Hide the button instantly
+        gsap.to(enterBtn, { opacity: 0, pointerEvents: 'none', duration: 0.2 });
+        
+        // Play the Shutter Sound (now allowed because of interaction!)
+        playShutterSound();
+
+        // Resume timeline
+        tl.play();
+      });
+    }
+
+    // 6. THE TRANSITION: Massive Logo/Lens scale up into the camera (Resumes after click)
+    tl.to(tagline, { opacity: 0, duration: 0.4 }, 3.5);
+    
+    tl.to(svgLogo, { 
+      rotation: 180, 
+      scale: 15, 
+      opacity: 0,
+      duration: 1.5, 
+      ease: 'power4.in' 
+    }, 3.5);
+
+    tl.to(wrapper, {
+      scale: 2,
+      opacity: 0,
+      duration: 1.5,
+      ease: 'power4.in'
+    }, 3.5);
+
+    tl.to(glow, {
+      opacity: 0,
+      scale: 3,
+      duration: 1,
+      ease: 'power2.in'
+    }, 3.8);
+
+    tl.to(loader, {
+      opacity: 0,
+      duration: 0.5,
+      ease: 'none'
+    }, 4.5);
+  }
+</script>

@@ -1,0 +1,270 @@
+---
+import { Quote, Star, ChevronLeft, ChevronRight } from '@lucide/astro';
+
+const testimonials = [
+  {
+    quote: "RADY Video Production captured our wedding in Tuscany, and we were absolutely blown away. The final films felt like a high-end cinematic movie trailer you would watch in a theater. Absolute genius.",
+    author: "Sophia & Lucas",
+    role: "Bride & Groom",
+    stars: 5,
+    project: "Tuscany Wedding Film"
+  },
+  {
+    quote: "For our commercial launch campaign, RADY delivered a product video that matched the quality of an Apple or Porsche advert. The lighting, pacing, and visual storytelling were top-tier.",
+    author: "Marcus Aurelius",
+    role: "CMO at Vertex Corp",
+    stars: 5,
+    project: "Brand Commercial Launch"
+  },
+  {
+    quote: "The drone cinematography and BTS capture they completed for our documentary was exceptional. Extremely professional crew, fast turnarounds, and pure creative genius.",
+    author: "Elena Rostova",
+    role: "Documentary Producer",
+    stars: 5,
+    project: "Echoes of History Film"
+  }
+];
+---
+
+<section id="testimonials" class="relative py-32 bg-brand-matte overflow-hidden font-sans border-t border-brand-charcoal/20">
+  <div class="max-w-7xl mx-auto px-6 md:px-12 w-full">
+    <!-- Header -->
+    <div class="text-center max-w-2xl mx-auto mb-20 select-none">
+      <span class="text-xs tracking-[0.4em] uppercase text-brand-gold font-semibold mb-4 block" id="testimonials-tag">
+        Testimonials
+      </span>
+      <h2 class="font-serif text-3xl md:text-5xl font-bold text-brand-ivory mb-6" id="testimonials-title">
+        Client Stories
+      </h2>
+      <div class="w-12 h-[1px] bg-brand-gold/60 mx-auto" id="testimonials-divider"></div>
+    </div>
+
+    <!-- Carousel Container -->
+    <div class="relative max-w-4xl mx-auto" id="testimonials-carousel">
+      <!-- Testimonials list wrapper -->
+      <div class="overflow-hidden relative h-[360px] md:h-[280px]">
+        {testimonials.map((t, idx) => (
+          <div
+            class="testimonial-card absolute inset-0 w-full h-full glassmorphism-premium p-8 md:p-12 flex flex-col justify-between transition-all duration-700 ease-in-out opacity-0 translate-x-12 select-none"
+            data-index={idx}
+          >
+            <!-- Quote icon and Stars -->
+            <div class="flex justify-between items-start">
+              <div class="text-brand-gold/30">
+                <Quote class="w-10 h-10 fill-current" />
+              </div>
+              <div class="flex gap-1 text-brand-gold">
+                {Array.from({ length: t.stars }).map(() => (
+                  <Star class="w-4.5 h-4.5 fill-current" />
+                ))}
+              </div>
+            </div>
+
+            <!-- Quote Text -->
+            <blockquote class="font-serif text-sm md:text-lg italic text-brand-ivory/80 leading-relaxed my-6">
+              "{t.quote}"
+            </blockquote>
+
+            <!-- Author & Project tag -->
+            <div class="flex justify-between items-end border-t border-brand-charcoal/40 pt-4">
+              <div>
+                <cite class="not-italic text-sm font-bold text-brand-gold">{t.author}</cite>
+                <span class="text-[10px] text-brand-ivory/50 uppercase tracking-widest block mt-0.5">{t.role}</span>
+              </div>
+              <span class="text-[9px] tracking-widest uppercase text-brand-champagne/60 bg-brand-matte/50 px-3 py-1 border border-brand-charcoal/40">
+                {t.project}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Carousel Navigation Controls -->
+      <div class="flex justify-center items-center gap-6 mt-10 select-none">
+        <button
+          id="prev-testimonial"
+          class="magnetic-btn-nav w-10 h-10 flex items-center justify-center border border-brand-charcoal text-brand-ivory/60 hover:border-brand-gold hover:text-brand-gold rounded-full transition-all duration-300 focus:outline-none"
+          aria-label="Previous Testimonial"
+        >
+          <ChevronLeft class="w-5 h-5" />
+        </button>
+        <!-- Pagination Indicator Dots -->
+        <div class="flex gap-2.5" id="testimonial-dots">
+          {testimonials.map((_, idx) => (
+            <button
+              class="dot-indicator w-2 h-2 rounded-full bg-brand-charcoal transition-all duration-500"
+              data-index={idx}
+              aria-label={`Go to slide ${idx + 1}`}
+            ></button>
+          ))}
+        </div>
+        <button
+          id="next-testimonial"
+          class="magnetic-btn-nav w-10 h-10 flex items-center justify-center border border-brand-charcoal text-brand-ivory/60 hover:border-brand-gold hover:text-brand-gold rounded-full transition-all duration-300 focus:outline-none"
+          aria-label="Next Testimonial"
+        >
+          <ChevronRight class="w-5 h-5" />
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // --- HUD Updates ---
+  ScrollTrigger.create({
+    trigger: '#testimonials',
+    start: 'top center',
+    end: 'bottom center',
+    onEnter: () => {
+      window.dispatchEvent(new CustomEvent('hudUpdate', {
+        detail: { iso: '640', shutter: '1/100', fps: '24', aperture: '2.0', wb: '4800K' }
+      }));
+    },
+    onEnterBack: () => {
+      window.dispatchEvent(new CustomEvent('hudUpdate', {
+        detail: { iso: '640', shutter: '1/100', fps: '24', aperture: '2.0', wb: '4800K' }
+      }));
+    }
+  });
+
+  // --- ScrollTrigger Entries ---
+  gsap.fromTo('#testimonials-tag', { opacity: 0, y: 15 }, {
+    opacity: 1, y: 0, duration: 0.8,
+    scrollTrigger: { trigger: '#testimonials-tag', start: 'top 85%' }
+  });
+
+  gsap.fromTo('#testimonials-title', { opacity: 0, y: 20 }, {
+    opacity: 1, y: 0, duration: 1,
+    scrollTrigger: { trigger: '#testimonials-title', start: 'top 85%' }
+  });
+
+  gsap.fromTo('#testimonials-divider', { scaleX: 0 }, {
+    scaleX: 1, duration: 1.2,
+    scrollTrigger: { trigger: '#testimonials-divider', start: 'top 85%' }
+  });
+
+  gsap.fromTo('#testimonials-carousel', { opacity: 0, y: 30 }, {
+    opacity: 1, y: 0, duration: 1.2, ease: 'power3.out',
+    scrollTrigger: { trigger: '#testimonials-carousel', start: 'top 80%' }
+  });
+
+  // --- Testimonial Slider Functionality ---
+  const cards = document.querySelectorAll('.testimonial-card') as NodeListOf<HTMLElement>;
+  const dots = document.querySelectorAll('.dot-indicator') as NodeListOf<HTMLElement>;
+  const prevBtn = document.getElementById('prev-testimonial');
+  const nextBtn = document.getElementById('next-testimonial');
+
+  let activeIndex = 0;
+  const numCards = cards.length;
+
+  const showTestimonial = (index: number, direction: 'next' | 'prev') => {
+    // Determine entrance/exit offsets
+    const outX = direction === 'next' ? -50 : 50;
+    const inX = direction === 'next' ? 50 : -50;
+
+    cards.forEach((card, idx) => {
+      const isCurrentlyActive = card.classList.contains('active-slide');
+      
+      if (idx === index) {
+        // Entrance animation
+        card.style.zIndex = '2';
+        card.classList.add('active-slide');
+        
+        gsap.killTweensOf(card);
+        gsap.fromTo(card,
+          { opacity: 0, x: inX },
+          { opacity: 1, x: 0, duration: 0.65, ease: 'power2.out' }
+        );
+      } else if (isCurrentlyActive) {
+        // Exit animation
+        card.style.zIndex = '1';
+        card.classList.remove('active-slide');
+        
+        gsap.killTweensOf(card);
+        gsap.fromTo(card,
+          { opacity: 1, x: 0 },
+          { opacity: 0, x: outX, duration: 0.5, ease: 'power2.in' }
+        );
+      } else {
+        // Idle state (hide)
+        card.style.zIndex = '0';
+        gsap.set(card, { opacity: 0 });
+      }
+    });
+
+    // Update dots indicator
+    dots.forEach((dot, idx) => {
+      if (idx === index) {
+        dot.classList.add('bg-brand-gold', 'w-6');
+        dot.classList.remove('bg-brand-charcoal', 'w-2');
+      } else {
+        dot.classList.add('bg-brand-charcoal', 'w-2');
+        dot.classList.remove('bg-brand-gold', 'w-6');
+      }
+    });
+
+    activeIndex = index;
+  };
+
+  // Bind controls
+  prevBtn?.addEventListener('click', () => {
+    const nextIndex = (activeIndex - 1 + numCards) % numCards;
+    showTestimonial(nextIndex, 'prev');
+  });
+
+  nextBtn?.addEventListener('click', () => {
+    const nextIndex = (activeIndex + 1) % numCards;
+    showTestimonial(nextIndex, 'next');
+  });
+
+  dots.forEach((dot) => {
+    dot.addEventListener('click', () => {
+      const targetIdx = parseInt(dot.getAttribute('data-index') || '0');
+      if (targetIdx === activeIndex) return;
+      showTestimonial(targetIdx, targetIdx > activeIndex ? 'next' : 'prev');
+    });
+  });
+
+  // Initialize first slide (no animations, just display)
+  if (cards.length > 0) {
+    cards[0].classList.add('active-slide');
+    gsap.set(cards[0], { opacity: 1, x: 0, zIndex: 2 });
+    
+    if (dots.length > 0) {
+      dots[0].classList.add('bg-brand-gold', 'w-6');
+      dots[0].classList.remove('bg-brand-charcoal', 'w-2');
+    }
+  }
+
+  // --- Magnetic Carousel Nav Buttons ---
+  const navBtns = document.querySelectorAll('.magnetic-btn-nav');
+  navBtns.forEach((btn) => {
+    btn.addEventListener('mousemove', (e: any) => {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      
+      gsap.to(btn, {
+        x: x * 0.35,
+        y: y * 0.35,
+        duration: 0.3,
+        ease: 'power2.out'
+      });
+    });
+
+    btn.addEventListener('mouseleave', () => {
+      gsap.to(btn, {
+        x: 0,
+        y: 0,
+        duration: 0.5,
+        ease: 'power2.out'
+      });
+    });
+  });
+</script>

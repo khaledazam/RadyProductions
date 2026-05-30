@@ -1,0 +1,131 @@
+---
+---
+
+<div id="camera-hud" class="fixed inset-0 pointer-events-none z-[90] flex flex-col justify-between p-6 md:p-12 font-sans opacity-0 transition-opacity duration-1000">
+  
+  <!-- Top Bar -->
+  <div class="flex justify-between items-start text-brand-gold/70 text-[9px] md:text-[10px] tracking-widest uppercase">
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-red-600 animate-pulse" id="hud-rec"></span>
+        <span>REC</span>
+        <span class="ml-4 font-mono" id="hud-timecode">00:00:00:00</span>
+      </div>
+      <div>CFast 2.0  98%</div>
+    </div>
+
+    <div class="flex items-center gap-6">
+      <div class="flex flex-col text-right">
+        <span>ISO <span id="hud-iso" class="text-brand-ivory font-medium">800</span></span>
+        <span><span id="hud-shutter" class="text-brand-ivory font-medium">1/48</span> SEC</span>
+      </div>
+      <div class="flex flex-col text-right">
+        <span><span id="hud-fps" class="text-brand-ivory font-medium">24</span> FPS</span>
+        <span>WB <span id="hud-wb" class="text-brand-ivory font-medium">5600K</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Center Framing Marks -->
+  <div class="absolute inset-0 flex items-center justify-center opacity-30">
+    <div class="w-[80vw] h-[70vh] border border-brand-gold/20 relative">
+      <!-- Corners -->
+      <div class="absolute top-0 left-0 w-8 h-8 border-t border-l border-brand-gold"></div>
+      <div class="absolute top-0 right-0 w-8 h-8 border-t border-r border-brand-gold"></div>
+      <div class="absolute bottom-0 left-0 w-8 h-8 border-b border-l border-brand-gold"></div>
+      <div class="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-brand-gold"></div>
+      
+      <!-- Center Crosshair -->
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4">
+        <div class="absolute top-1/2 left-0 w-full h-[1px] bg-brand-gold/50"></div>
+        <div class="absolute top-0 left-1/2 w-[1px] h-full bg-brand-gold/50"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="flex justify-between items-end text-brand-gold/70 text-[9px] md:text-[10px] tracking-widest uppercase">
+    <div class="flex items-center gap-4">
+      <!-- Sound Toggle -->
+      <button id="hud-sound-toggle" class="hover:text-brand-ivory transition-colors duration-300 pointer-events-auto">
+        SOUND: <span id="hud-sound-state" class="text-brand-ivory">OFF</span>
+      </button>
+      <span>LUT <span class="text-brand-ivory">RADY_CINEMA_01</span></span>
+      <span><span id="hud-res" class="text-brand-ivory">8K RAW</span></span>
+    </div>
+    
+    <div class="flex items-center gap-4">
+      <span class="font-serif text-lg text-brand-gold italic">RADY</span>
+      <span>ƒ/<span id="hud-aperture" class="text-brand-ivory font-medium">1.4</span></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Sound Logic
+  const soundToggle = document.getElementById('hud-sound-toggle');
+  const soundState = document.getElementById('hud-sound-state');
+  let soundEnabled = false;
+  let voicePlayed = false;
+
+  if (soundToggle && soundState) {
+    soundToggle.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      soundState.textContent = soundEnabled ? 'ON' : 'OFF';
+      
+      if (soundEnabled && !voicePlayed) {
+        voicePlayed = true;
+        // Play AI Voice Intro
+        if ('speechSynthesis' in window) {
+          const msg = new SpeechSynthesisUtterance("Welcome to RADY Video Production.");
+          msg.rate = 0.8; // Slow, cinematic
+          msg.pitch = 0.5; // Deep voice
+          
+          // Try to find a good English voice
+          const voices = window.speechSynthesis.getVoices();
+          const deepVoice = voices.find(v => v.name.includes('Google UK English Male') || v.name.includes('Daniel') || v.lang === 'en-GB');
+          if (deepVoice) msg.voice = deepVoice;
+          
+          window.speechSynthesis.speak(msg);
+        }
+      }
+    });
+  }
+
+  // Simple Timecode Generator
+  const timecodeEl = document.getElementById('hud-timecode');
+  if (timecodeEl) {
+    let frames = 0;
+    let seconds = 0;
+    let minutes = 0;
+    let hours = 0;
+    
+    setInterval(() => {
+      frames++;
+      if (frames >= 24) { frames = 0; seconds++; }
+      if (seconds >= 60) { seconds = 0; minutes++; }
+      if (minutes >= 60) { minutes = 0; hours++; }
+      
+      timecodeEl.textContent = 
+        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${frames.toString().padStart(2, '0')}`;
+    }, 1000 / 24);
+  }
+
+  // HUD values can be globally accessed or triggered via CustomEvents from other GSAP scenes
+  window.addEventListener('hudUpdate', (e: any) => {
+    const data = e.detail;
+    if (data.iso) document.getElementById('hud-iso')!.textContent = data.iso;
+    if (data.shutter) document.getElementById('hud-shutter')!.textContent = data.shutter;
+    if (data.fps) document.getElementById('hud-fps')!.textContent = data.fps;
+    if (data.aperture) document.getElementById('hud-aperture')!.textContent = data.aperture;
+    if (data.wb) document.getElementById('hud-wb')!.textContent = data.wb;
+  });
+  
+  // Fade in HUD after loader finishes
+  window.addEventListener('loaderFinished', () => {
+    const hud = document.getElementById('camera-hud');
+    if (hud) {
+      hud.style.opacity = '1';
+    }
+  });
+</script>

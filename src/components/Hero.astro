@@ -1,0 +1,347 @@
+---
+---
+
+<section id="scene-hero" class="relative h-[250vh] bg-brand-matte w-full border-none">
+  
+  <div class="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
+    
+    <!-- Canvas container for Three.js (dynamic element) -->
+    <hero-three class="absolute inset-0 z-0 pointer-events-none"></hero-three>
+
+    <!-- Scene 1 Text (Initial Hero) -->
+    <div id="hero-initial" class="max-w-7xl mx-auto px-6 md:px-12 w-full z-10 flex flex-col items-center text-center select-none absolute">
+      <span class="hero-reveal text-xs md:text-sm tracking-[0.45em] uppercase text-brand-gold mb-6 inline-block font-sans font-semibold">
+        RADY Video Production
+      </span>
+      <h1 class="hero-reveal font-serif text-4xl md:text-7xl lg:text-8xl font-bold tracking-tight text-brand-ivory leading-[1.1] max-w-5xl">
+        We Don't Just <br class="hidden md:inline" />
+        Create Videos. <br />
+        <span class="text-gold-gradient">We Tell Stories.</span>
+      </h1>
+    </div>
+
+    <!-- Scene 2 Text (Wedding Moment - EMerging from Lens) -->
+    <div id="hero-wedding" class="max-w-5xl mx-auto px-6 z-20 flex flex-col items-center text-center select-none absolute opacity-0 pointer-events-none transform scale-50">
+      <h2 class="font-serif text-3xl md:text-6xl font-bold tracking-tight text-brand-ivory drop-shadow-[0_0_20px_rgba(0,0,0,0.8)]">
+        Every story begins with <br/>
+        <span class="text-brand-gold italic">a moment.</span>
+      </h2>
+    </div>
+
+    <!-- Mouse Indicator -->
+    <div id="hero-scroll-indicator" class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2.5 pointer-events-none z-10 opacity-70">
+      <span class="text-[9px] tracking-[0.3em] uppercase text-brand-champagne/60 font-sans font-light">Scroll to Open Lens</span>
+      <div class="w-[18px] h-[30px] border border-brand-champagne/25 rounded-full flex justify-center p-1">
+        <div class="w-[2px] h-[6px] bg-brand-gold rounded-full animate-bounce"></div>
+      </div>
+    </div>
+    
+    <!-- Cinematic Aperture Transition Black Overlay -->
+    <div id="hero-black-transition" class="absolute inset-0 bg-brand-matte z-[30] pointer-events-none opacity-0"></div>
+
+  </div>
+</section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // --- GSAP Reveal Animations ---
+  const animateHero = () => {
+    const tl = gsap.timeline();
+    tl.fromTo('.hero-reveal', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1.2, stagger: 0.2, ease: 'power3.out' });
+  };
+
+  window.addEventListener('loaderFinished', animateHero);
+
+  if (!document.documentElement.classList.contains('loading-lock')) {
+    animateHero();
+  }
+
+  // --- ScrollTrigger Logic for Scenes 1 & 2 ---
+  const section = document.getElementById('scene-hero');
+  if (section) {
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 1,
+        onEnter: () => {
+          window.dispatchEvent(new CustomEvent('hudUpdate', {
+            detail: { iso: '100', shutter: '1/50', fps: '24', aperture: '2.0', wb: '5600K' }
+          }));
+        },
+        onEnterBack: () => {
+          window.dispatchEvent(new CustomEvent('hudUpdate', {
+            detail: { iso: '100', shutter: '1/50', fps: '24', aperture: '2.0', wb: '5600K' }
+          }));
+        }
+      }
+    });
+
+    // 1. Fade out initial text
+    tl.to('#hero-initial', { opacity: 0, scale: 1.1, duration: 1 }, 0);
+    tl.to('#hero-scroll-indicator', { opacity: 0, duration: 0.5 }, 0);
+
+    // 2. Fade IN Wedding text (Emerging from inside the lens)
+    tl.to('#hero-wedding', { opacity: 1, scale: 1, duration: 2 }, 1);
+    
+    // 3. Fade OUT Wedding text
+    tl.to('#hero-wedding', { opacity: 0, scale: 1.2, duration: 1 }, 3.5);
+
+    // 4. Cinematic Aperture Close Transition (Blackout before Scene 3)
+    tl.to('#hero-black-transition', { opacity: 1, duration: 1 }, 4);
+  }
+
+  // --- Dynamic Three.js Web Component ---
+  class HeroThree extends HTMLElement {
+    private renderer: any;
+    private scene: any;
+    private camera: any;
+    private animationFrameId: number | null = null;
+    private resizeHandler: any;
+    private mouseMoveHandler: any;
+    private apertureProgress = 0; // 0 = closed, 1 = open
+
+    connectedCallback() {
+      window.addEventListener('loaderFinished', () => this.init());
+      if (!document.documentElement.classList.contains('loading-lock')) {
+        this.init();
+      }
+    }
+
+    async init() {
+      if (this.renderer) return;
+
+      try {
+        const THREE = await import('three');
+        this.scene = new THREE.Scene();
+        this.camera = new THREE.PerspectiveCamera(60, this.clientWidth / this.clientHeight, 0.1, 100);
+        this.camera.position.z = 8;
+
+        this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
+        this.renderer.setSize(this.clientWidth, this.clientHeight);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = 1.2;
+        this.appendChild(this.renderer.domElement);
+
+        const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
+        pmremGenerator.compileEquirectangularShader();
+        const envScene = new THREE.Scene();
+        envScene.background = new THREE.Color(0x050505);
+        const envLight1 = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 1), new THREE.MeshBasicMaterial({color: 0xffffff}));
+        envLight1.position.set(0, 10, -10);
+        envLight1.rotation.x = Math.PI / 4;
+        envScene.add(envLight1);
+        const envLight2 = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 1), new THREE.MeshBasicMaterial({color: 0xC7A76A}));
+        envLight2.position.set(10, 0, 10);
+        envLight2.rotation.y = -Math.PI / 4;
+        envScene.add(envLight2);
+        const renderTarget = pmremGenerator.fromScene(envScene);
+        this.scene.environment = renderTarget.texture;
+
+        const lensGroup = new THREE.Group();
+        this.scene.add(lensGroup);
+
+        const barrelMat = new THREE.MeshPhysicalMaterial({ color: 0x111111, roughness: 0.4, metalness: 0.8, clearcoat: 0.2, envMapIntensity: 1.0 });
+        const goldMat = new THREE.MeshPhysicalMaterial({ color: 0xC7A76A, roughness: 0.15, metalness: 1.0, clearcoat: 1.0, envMapIntensity: 2.0 });
+        
+        // Load wedding visual for inside the lens (Scene 2 reflection)
+        const texLoader = new THREE.TextureLoader();
+        const weddingTex = texLoader.load('/assets/portfolio_wedding.png');
+        const glassMat = new THREE.MeshPhysicalMaterial({ 
+          map: weddingTex,
+          color: 0xEBD9B5, roughness: 0.2, transmission: 0.8, thickness: 1.5, ior: 1.5, clearcoat: 1.0, envMapIntensity: 3.0 
+        });
+
+        const outerGeo = new THREE.CylinderGeometry(2.5, 2.5, 1, 64, 1, true);
+        const outerMesh = new THREE.Mesh(outerGeo, barrelMat);
+        outerMesh.rotation.x = Math.PI / 2;
+        lensGroup.add(outerMesh);
+
+        const goldRingGeo = new THREE.CylinderGeometry(2.52, 2.52, 0.2, 64);
+        const goldRingMesh = new THREE.Mesh(goldRingGeo, goldMat);
+        goldRingMesh.rotation.x = Math.PI / 2;
+        goldRingMesh.position.z = 0.3;
+        lensGroup.add(goldRingMesh);
+
+        const glassGeo = new THREE.SphereGeometry(2.3, 64, 32, 0, Math.PI * 2, 0, Math.PI / 6.5);
+        const glassMesh = new THREE.Mesh(glassGeo, glassMat);
+        glassMesh.rotation.x = Math.PI / 2;
+        glassMesh.position.z = 0.5;
+        lensGroup.add(glassMesh);
+
+        const bladesGroup = new THREE.Group();
+        bladesGroup.position.z = 0.1;
+        lensGroup.add(bladesGroup);
+
+        const bladeCount = 6;
+        const blades: any[] = [];
+        const bladeGeo = new THREE.PlaneGeometry(3.5, 1.2);
+        bladeGeo.translate(1.5, 0, 0); 
+
+        const bladeMat = new THREE.MeshStandardMaterial({ color: 0x0A0A0A, roughness: 0.7, metalness: 0.9, side: THREE.DoubleSide });
+
+        for (let i = 0; i < bladeCount; i++) {
+          const blade = new THREE.Mesh(bladeGeo, bladeMat);
+          const angle = (i / bladeCount) * Math.PI * 2;
+          blade.rotation.z = angle;
+          
+          const bladeContainer = new THREE.Group();
+          bladeContainer.add(blade);
+          bladesGroup.add(bladeContainer);
+          blades.push({ container: bladeContainer, baseAngle: angle });
+        }
+
+        const vMat = new THREE.MeshBasicMaterial({ color: 0xC7A76A, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
+        const vGeo = new THREE.ConeGeometry(3, 15, 32, 1, true);
+        const vMesh = new THREE.Mesh(vGeo, vMat);
+        vMesh.rotation.x = -Math.PI / 2;
+        vMesh.position.z = 7.5;
+        lensGroup.add(vMesh);
+
+        const particlesCount = 300;
+        const positions = new Float32Array(particlesCount * 3);
+        const sizes = new Float32Array(particlesCount);
+        const randomOffsets = new Float32Array(particlesCount);
+
+        for (let i = 0; i < particlesCount * 3; i += 3) {
+          positions[i] = (Math.random() - 0.5) * 25;     
+          positions[i + 1] = (Math.random() - 0.5) * 15; 
+          positions[i + 2] = (Math.random() - 0.5) * 15; 
+          const zDepth = Math.abs(positions[i + 2]);
+          sizes[i/3] = Math.random() * 0.2 + (zDepth * 0.05);
+          randomOffsets[i/3] = Math.random() * 10;
+        }
+
+        const particlesGeo = new THREE.BufferGeometry();
+        particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        particlesGeo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+        const bokehMat = new THREE.ShaderMaterial({
+          uniforms: { color: { value: new THREE.Color(0xEBD9B5) } },
+          vertexShader: `
+            attribute float size; varying float vOpacity;
+            void main() {
+              vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+              gl_PointSize = size * (300.0 / -mvPosition.z);
+              vOpacity = 1.0 - clamp(abs(position.z) / 10.0, 0.0, 0.8);
+              gl_Position = projectionMatrix * mvPosition;
+            }
+          `,
+          fragmentShader: `
+            uniform vec3 color; varying float vOpacity;
+            void main() {
+              float d = distance(gl_PointCoord, vec2(0.5));
+              if (d > 0.5) discard;
+              float alpha = smoothstep(0.5, 0.1, d) * vOpacity * 0.6;
+              gl_FragColor = vec4(color, alpha);
+            }
+          `,
+          transparent: true, blending: THREE.AdditiveBlending, depthWrite: false
+        });
+
+        const particleSystem = new THREE.Points(particlesGeo, bokehMat);
+        this.scene.add(particleSystem);
+
+        // Link aperture to the scene scroll
+        const heroSection = document.getElementById('scene-hero');
+        if (heroSection) {
+          ScrollTrigger.create({
+            trigger: heroSection,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 1.5,
+            onUpdate: (self) => {
+              // Open then close at the end
+              if (self.progress < 0.8) {
+                this.apertureProgress = (self.progress / 0.8) * 1.2; // Over-open
+              } else {
+                this.apertureProgress = 1.2 - ((self.progress - 0.8) / 0.2) * 1.2; // Close back down
+              }
+            }
+          });
+        }
+
+        let mouseX = 0; let mouseY = 0;
+        let currentTargetX = 0; let currentTargetY = 0;
+        this.mouseMoveHandler = (e: MouseEvent) => {
+          mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+          mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+        };
+        window.addEventListener('mousemove', this.mouseMoveHandler);
+
+        const clock = new THREE.Clock();
+
+        const animate = () => {
+          this.animationFrameId = requestAnimationFrame(animate);
+          const elapsed = clock.getElapsedTime();
+
+          currentTargetX += (mouseX - currentTargetX) * 0.05;
+          currentTargetY += (mouseY - currentTargetY) * 0.05;
+
+          lensGroup.rotation.y = currentTargetX * 0.3;
+          lensGroup.rotation.x = -currentTargetY * 0.3;
+          lensGroup.rotation.z = elapsed * 0.02;
+
+          const closedAngle = Math.PI / 4; 
+          const openAngle = Math.PI / 2.2;
+          
+          // Clamp progress
+          let p = Math.max(0, Math.min(1, this.apertureProgress));
+          const currentApertureAngle = closedAngle + (openAngle - closedAngle) * p;
+          
+          blades.forEach((bladeObj, idx) => {
+            const mesh = bladeObj.container.children[0];
+            mesh.rotation.z = currentApertureAngle;
+            const radius = 1.0 + (p * 1.5);
+            mesh.position.x = Math.cos(bladeObj.baseAngle) * radius;
+            mesh.position.y = Math.sin(bladeObj.baseAngle) * radius;
+          });
+
+          vMat.opacity = p * 0.15;
+          vMesh.scale.set(1 + p, 1 + p, 1 + p);
+
+          const posArr = particlesGeo.attributes.position.array as Float32Array;
+          for (let i = 0; i < particlesCount; i++) {
+            const index = i * 3;
+            posArr[index + 1] += Math.sin(elapsed * 0.5 + randomOffsets[i]) * 0.005 + 0.002;
+            posArr[index] += Math.cos(elapsed * 0.2 + randomOffsets[i]) * 0.002;
+            if (posArr[index + 1] > 7.5) posArr[index + 1] = -7.5;
+            if (posArr[index] > 12.5) posArr[index] = -12.5;
+          }
+          particlesGeo.attributes.position.needsUpdate = true;
+
+          this.renderer.render(this.scene, this.camera);
+        };
+
+        animate();
+
+        this.resizeHandler = () => {
+          if (!this.renderer || !this.camera) return;
+          this.camera.aspect = this.clientWidth / this.clientHeight;
+          this.camera.updateProjectionMatrix();
+          this.renderer.setSize(this.clientWidth, this.clientHeight);
+          this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        };
+        window.addEventListener('resize', this.resizeHandler);
+
+      } catch (err) {
+        console.error("Three.js initialization failed:", err);
+      }
+    }
+
+    disconnectedCallback() {
+      if (this.animationFrameId !== null) cancelAnimationFrame(this.animationFrameId);
+      if (this.resizeHandler) window.removeEventListener('resize', this.resizeHandler);
+      if (this.mouseMoveHandler) window.removeEventListener('mousemove', this.mouseMoveHandler);
+      if (this.renderer) this.renderer.dispose();
+    }
+  }
+
+  customElements.define('hero-three', HeroThree);
+</script>
