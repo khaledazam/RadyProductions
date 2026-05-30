@@ -1,4 +1,4 @@
-import { c as createLucideIcon } from './createLucideIcon_CrT7CJvO.mjs';
+import { c as createLucideIcon } from './createLucideIcon_Be6iv2-u.mjs';
 
 const ArrowLeft = createLucideIcon("arrow-left", [["path", { "d": "m12 19-7-7 7-7" }], ["path", { "d": "M19 12H5" }]]);
 

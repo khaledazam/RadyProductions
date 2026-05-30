@@ -1,6 +1,6 @@
-import { c as createComponent } from './astro-component_DnHt1ad6.mjs';
+import { c as createComponent } from './astro-component_C1Eacmxp.mjs';
 import 'piccolore';
-import { p as maybeRenderHead, v as spreadAttributes, j as addAttribute, q as renderComponent, u as renderTemplate, t as renderSlot } from './entrypoint_CgqROQxQ.mjs';
+import { p as maybeRenderHead, v as spreadAttributes, j as addAttribute, q as renderComponent, u as renderTemplate, t as renderSlot } from './entrypoint_Bw6XB4lw.mjs';
 
 const defaultAttributes = {
   xmlns: "http://www.w3.org/2000/svg",
