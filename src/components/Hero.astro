@@ -10,27 +10,27 @@
 
     <!-- Scene 1 Text (Initial Hero) -->
     <div id="hero-initial" class="max-w-7xl mx-auto px-6 md:px-12 w-full z-10 flex flex-col items-center text-center select-none absolute">
-      <span class="hero-reveal text-xs md:text-sm tracking-[0.45em] uppercase text-brand-gold mb-6 inline-block font-sans font-semibold">
+      <span class="hero-reveal text-xs md:text-sm tracking-[0.45em] uppercase text-brand-gold mb-6 inline-block font-sans font-semibold" data-i18n="hero.tagline">
         RADY Video Production
       </span>
       <h1 class="hero-reveal font-serif text-4xl md:text-7xl lg:text-8xl font-bold tracking-tight text-brand-ivory leading-[1.1] max-w-5xl">
-        We Don't Just <br class="hidden md:inline" />
-        Create Videos. <br />
-        <span class="text-gold-gradient">We Tell Stories.</span>
+        <span data-i18n="hero.h1_line1">We Don't Just</span> <br class="hidden md:inline" />
+        <span data-i18n="hero.h1_line2">Create Videos.</span> <br />
+        <span class="text-gold-gradient" data-i18n="hero.h1_gold">We Tell Stories.</span>
       </h1>
     </div>
 
     <!-- Scene 2 Text (Wedding Moment - EMerging from Lens) -->
     <div id="hero-wedding" class="max-w-5xl mx-auto px-6 z-20 flex flex-col items-center text-center select-none absolute opacity-0 pointer-events-none transform scale-50">
       <h2 class="font-serif text-3xl md:text-6xl font-bold tracking-tight text-brand-ivory drop-shadow-[0_0_20px_rgba(0,0,0,0.8)]">
-        Every story begins with <br/>
-        <span class="text-brand-gold italic">a moment.</span>
+        <span data-i18n="hero.wedding_line1">Every story begins with</span> <br/>
+        <span class="text-brand-gold italic" data-i18n="hero.wedding_gold">a moment.</span>
       </h2>
     </div>
 
     <!-- Mouse Indicator -->
     <div id="hero-scroll-indicator" class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2.5 pointer-events-none z-10 opacity-70">
-      <span class="text-[9px] tracking-[0.3em] uppercase text-brand-champagne/60 font-sans font-light">Scroll to Open Lens</span>
+      <span class="text-[9px] tracking-[0.3em] uppercase text-brand-champagne/60 font-sans font-light" data-i18n="hero.scroll">Scroll to Open Lens</span>
       <div class="w-[18px] h-[30px] border border-brand-champagne/25 rounded-full flex justify-center p-1">
         <div class="w-[2px] h-[6px] bg-brand-gold rounded-full animate-bounce"></div>
       </div>

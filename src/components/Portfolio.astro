@@ -9,48 +9,15 @@ const categories = [
   { id: 'bts', label: 'Behind The Scenes' }
 ];
 
-const portfolioItems = [
-  {
-    id: 1,
-    title: "Gabriella & Alessandro",
-    category: "weddings",
-    image: "/assets/portfolio_wedding.png",
-    videoUrl: "https://player.vimeo.com/external/371433846.sd.mp4?s=236da2f3c02af00ba84ebb0e9edcc351cc92d4b8&profile_id=165&oauth2_token_id=57447761",
-    location: "Tuscany, Italy"
-  },
-  {
-    id: 2,
-    title: "The Neon Horizon",
-    category: "commercials",
-    image: "/assets/portfolio_commercial.png",
-    videoUrl: "https://player.vimeo.com/external/435674703.sd.mp4?s=7f3af5e6e3d627fb4269e80e1c6670b8a1c97a8e&profile_id=165&oauth2_token_id=57447761",
-    location: "Brand Commercial"
-  },
-  {
-    id: 3,
-    title: "Vertex Corporate Summit",
-    category: "corporate",
-    image: "/assets/portfolio_corporate.png",
-    videoUrl: "https://player.vimeo.com/external/510850877.sd.mp4?s=7d6c1f03f7e6f6630f907e5c54c25f46a2a5ef5c&profile_id=165&oauth2_token_id=57447761",
-    location: "Cairo, Egypt"
-  },
-  {
-    id: 4,
-    title: "Coastline Drone Sweep",
-    category: "corporate", // also fits drone, mapping to corporate/bts
-    image: "/assets/portfolio_drone.png",
-    videoUrl: "https://player.vimeo.com/external/409217109.sd.mp4?s=dcf53bdf906d44a2c534433de2022834b9d07371&profile_id=165&oauth2_token_id=57447761",
-    location: "California, USA"
-  },
-  {
-    id: 5,
-    title: "Behind The Scenes: Alexa Rig",
-    category: "bts",
-    image: "/assets/about_camera.png",
-    videoUrl: "https://player.vimeo.com/external/454523910.sd.mp4?s=f52fa54d7f5817d7bbf1176b92131976269ebc26&profile_id=165&oauth2_token_id=57447761",
-    location: "Studio BTS"
-  }
-];
+import { supabase } from '../lib/supabase';
+
+const { data: portfolioItems, error } = await supabase
+  .from('portfolio_items')
+  .select('*')
+  .order('id', { ascending: true });
+
+// Fallback to empty array if error
+const itemsList = portfolioItems || [];
 ---
 
 <section id="portfolio" class="relative py-32 bg-brand-matte overflow-hidden font-sans border-t border-brand-charcoal/20">
@@ -73,6 +40,7 @@ const portfolioItems = [
           <button
             class={`filter-btn px-4 py-2 border text-xs tracking-widest uppercase transition-all duration-300 ${cat.id === 'all' ? 'border-brand-gold text-brand-gold active' : 'border-brand-charcoal text-brand-ivory/60 hover:border-brand-gold/40 hover:text-brand-ivory'}`}
             data-filter={cat.id}
+            data-i18n={`portfolio.${cat.id}`}
           >
             {cat.label}
           </button>
@@ -82,12 +50,13 @@ const portfolioItems = [
 
     <!-- Portfolio Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="portfolio-grid">
-      {portfolioItems.map((item) => (
+      {itemsList.map((item) => (
         <div
           class="gallery-item group relative overflow-hidden bg-brand-charcoal/30 border border-brand-charcoal aspect-[16/10]"
           data-category={item.category}
-          data-video={item.videoUrl}
-          data-title={item.title}
+          data-video={item.video_url}
+          data-title-en={item.title}
+          data-title-ar={item.title_ar}
           data-cursor-text="PLAY"
         >
           <!-- Thumbnail Image -->
@@ -116,17 +85,19 @@ const portfolioItems = [
           <div class="absolute inset-0 p-6 md:p-8 flex flex-col justify-between z-30">
             <!-- Top Location Tag -->
             <span class="self-start text-[9px] tracking-widest uppercase text-brand-champagne/70 bg-brand-matte/60 backdrop-blur-sm px-2.5 py-1 border border-brand-charcoal/50">
-              {item.location}
+              <span class="lang-en">{item.location}</span>
+              <span class="lang-ar font-serif" dir="rtl">{item.location_ar}</span>
             </span>
 
             <!-- Bottom Title and play indicator -->
             <div class="flex justify-between items-end">
               <div>
-                <span class="text-[9px] tracking-[0.2em] uppercase text-brand-gold font-semibold mb-1 block">
+                <span class="text-[9px] tracking-[0.2em] uppercase text-brand-gold font-semibold mb-1 block" data-i18n={`portfolio.${item.category}`}>
                   {item.category}
                 </span>
                 <h3 class="font-serif text-lg md:text-xl font-bold text-brand-ivory group-hover:text-brand-gold transition-colors duration-300">
-                  {item.title}
+                  <span class="lang-en">{item.title}</span>
+                  <span class="lang-ar font-serif" dir="rtl">{item.title_ar}</span>
                 </h3>
               </div>
 
@@ -280,7 +251,8 @@ const portfolioItems = [
     const video = item.querySelector('.portfolio-video') as HTMLVideoElement;
     const img = item.querySelector('.portfolio-img') as HTMLImageElement;
     const videoSrc = item.getAttribute('data-video');
-    const title = item.getAttribute('data-title');
+    const titleEn = item.getAttribute('data-title-en');
+    const titleAr = item.getAttribute('data-title-ar');
 
     // Hover Video Setup
     item.addEventListener('mouseenter', () => {
@@ -306,7 +278,8 @@ const portfolioItems = [
     item.addEventListener('click', () => {
       if (!lightbox || !lightboxPlayer || !lightboxTitle || !videoSrc) return;
 
-      lightboxTitle.textContent = title;
+      const isAr = document.documentElement.lang === 'ar';
+      lightboxTitle.textContent = isAr ? titleAr : titleEn;
       lightboxPlayer.src = videoSrc;
       
       lightbox.classList.remove('hidden');

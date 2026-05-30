@@ -19,19 +19,40 @@ import { Phone } from '@lucide/astro';
 
     <!-- Desktop Navigation Links -->
     <nav class="hidden lg:flex items-center gap-8">
-      {['About', 'Services', 'Portfolio', 'Experience', 'Testimonials'].map((item) => (
-        <a 
-          href={`#${item.toLowerCase()}`} 
-          class="magnetic-link text-xs tracking-[0.2em] uppercase text-brand-ivory/70 hover:text-brand-gold transition-colors duration-300 py-2 relative group"
-        >
-          {item}
-          <span class="absolute bottom-0 left-1/2 w-0 h-[1px] bg-brand-gold transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
-        </a>
-      ))}
+      <a href="#about" class="magnetic-link text-xs tracking-[0.2em] uppercase text-brand-ivory/70 hover:text-brand-gold transition-colors duration-300 py-2 relative group">
+        <span data-i18n="nav.about">About</span>
+        <span class="absolute bottom-0 left-1/2 w-0 h-[1px] bg-brand-gold transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
+      </a>
+      <a href="#services" class="magnetic-link text-xs tracking-[0.2em] uppercase text-brand-ivory/70 hover:text-brand-gold transition-colors duration-300 py-2 relative group">
+        <span data-i18n="nav.services">Services</span>
+        <span class="absolute bottom-0 left-1/2 w-0 h-[1px] bg-brand-gold transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
+      </a>
+      <a href="#portfolio" class="magnetic-link text-xs tracking-[0.2em] uppercase text-brand-ivory/70 hover:text-brand-gold transition-colors duration-300 py-2 relative group">
+        <span data-i18n="nav.portfolio">Portfolio</span>
+        <span class="absolute bottom-0 left-1/2 w-0 h-[1px] bg-brand-gold transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
+      </a>
+      <a href="#experience" class="magnetic-link text-xs tracking-[0.2em] uppercase text-brand-ivory/70 hover:text-brand-gold transition-colors duration-300 py-2 relative group">
+        <span data-i18n="nav.experience">Experience</span>
+        <span class="absolute bottom-0 left-1/2 w-0 h-[1px] bg-brand-gold transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
+      </a>
+      <a href="#testimonials" class="magnetic-link text-xs tracking-[0.2em] uppercase text-brand-ivory/70 hover:text-brand-gold transition-colors duration-300 py-2 relative group">
+        <span data-i18n="nav.testimonials">Testimonials</span>
+        <span class="absolute bottom-0 left-1/2 w-0 h-[1px] bg-brand-gold transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
+      </a>
     </nav>
 
     <!-- CTAs (Desktop) -->
-    <div class="hidden lg:flex items-center gap-6">
+    <div class="hidden lg:flex items-center gap-4">
+      <!-- Language Toggle -->
+      <button
+        id="lang-toggle"
+        aria-label="Toggle language"
+        class="flex items-center gap-1.5 px-3 py-1.5 border border-brand-gold/20 hover:border-brand-gold/50 transition-all duration-300 rounded-sm"
+      >
+        <span id="lang-en" class="text-[10px] font-sans font-semibold tracking-widest uppercase transition-colors duration-300" style="color: var(--color-brand-gold);">EN</span>
+        <span class="text-brand-charcoal text-[10px]">|</span>
+        <span id="lang-ar" class="text-[10px] font-sans font-semibold tracking-widest uppercase transition-colors duration-300" style="color: rgba(245,245,245,0.4);">عر</span>
+      </button>
       <a 
         href="tel:+201066151490" 
         class="flex items-center gap-2 text-xs tracking-wider text-brand-ivory/80 hover:text-brand-gold transition-colors duration-300"
@@ -44,21 +65,34 @@ import { Phone } from '@lucide/astro';
         class="magnetic-btn px-6 py-2.5 bg-transparent border border-brand-gold text-brand-gold hover:text-brand-matte text-xs tracking-[0.15em] uppercase transition-all duration-500 relative overflow-hidden font-medium group"
       >
         <span class="absolute inset-0 bg-gold-gradient translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-0"></span>
-        <span class="relative z-10">Book Now</span>
+        <span class="relative z-10" data-i18n="nav.book">Book Now</span>
       </a>
     </div>
 
-    <!-- Mobile Hamburger Toggle -->
-    <button 
-      id="mobile-menu-toggle" 
-      class="lg:hidden w-10 h-10 flex flex-col justify-center items-center gap-1.5 relative z-50 text-brand-ivory hover:text-brand-gold transition-colors duration-300 focus:outline-none"
-      aria-label="Toggle Navigation Menu"
-    >
-      <span class="w-6 h-[1.5px] bg-current transition-transform duration-300 origin-center" id="hamburger-top"></span>
-      <span class="w-6 h-[1.5px] bg-current transition-all duration-300" id="hamburger-middle"></span>
-      <span class="w-6 h-[1.5px] bg-current transition-transform duration-300 origin-center" id="hamburger-bottom"></span>
-    </button>
+    <!-- Mobile: Language Toggle + Hamburger -->
+    <div class="lg:hidden flex items-center gap-3">
+      <!-- Language Toggle (Mobile) -->
+      <button
+        id="lang-toggle-mobile"
+        aria-label="Toggle language"
+        class="flex items-center gap-1.5 px-2.5 py-1.5 border border-brand-gold/30 hover:border-brand-gold/70 transition-all duration-300 rounded-sm"
+      >
+        <span id="lang-en-m" class="text-[10px] font-sans font-bold tracking-widest uppercase transition-colors duration-300" style="color: var(--color-brand-gold);">EN</span>
+        <span class="text-brand-charcoal/60 text-[10px]">|</span>
+        <span id="lang-ar-m" class="text-[10px] font-sans font-bold tracking-widest uppercase transition-colors duration-300" style="color: rgba(245,245,245,0.4);">عر</span>
+      </button>
 
+      <!-- Mobile Hamburger Toggle -->
+      <button 
+        id="mobile-menu-toggle" 
+        class="w-10 h-10 flex flex-col justify-center items-center gap-1.5 relative z-50 text-brand-ivory hover:text-brand-gold transition-colors duration-300 focus:outline-none"
+        aria-label="Toggle Navigation Menu"
+      >
+        <span class="w-6 h-[1.5px] bg-current transition-transform duration-300 origin-center" id="hamburger-top"></span>
+        <span class="w-6 h-[1.5px] bg-current transition-all duration-300" id="hamburger-middle"></span>
+        <span class="w-6 h-[1.5px] bg-current transition-transform duration-300 origin-center" id="hamburger-bottom"></span>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -68,14 +102,11 @@ import { Phone } from '@lucide/astro';
   class="fixed inset-0 bg-brand-matte/95 backdrop-blur-xl z-45 translate-x-full transition-transform duration-500 lg:hidden flex flex-col justify-between p-8 pt-32"
 >
   <nav class="flex flex-col gap-6 items-center">
-    {['About', 'Services', 'Portfolio', 'Experience', 'Testimonials'].map((item) => (
-      <a 
-        href={`#${item.toLowerCase()}`} 
-        class="mobile-nav-link font-serif text-3xl text-brand-ivory/80 hover:text-brand-gold transition-colors duration-300 py-2"
-      >
-        {item}
-      </a>
-    ))}
+    <a href="#about" class="mobile-nav-link font-serif text-3xl text-brand-ivory/80 hover:text-brand-gold transition-colors duration-300 py-2" data-i18n="nav.about">About</a>
+    <a href="#services" class="mobile-nav-link font-serif text-3xl text-brand-ivory/80 hover:text-brand-gold transition-colors duration-300 py-2" data-i18n="nav.services">Services</a>
+    <a href="#portfolio" class="mobile-nav-link font-serif text-3xl text-brand-ivory/80 hover:text-brand-gold transition-colors duration-300 py-2" data-i18n="nav.portfolio">Portfolio</a>
+    <a href="#experience" class="mobile-nav-link font-serif text-3xl text-brand-ivory/80 hover:text-brand-gold transition-colors duration-300 py-2" data-i18n="nav.experience">Experience</a>
+    <a href="#testimonials" class="mobile-nav-link font-serif text-3xl text-brand-ivory/80 hover:text-brand-gold transition-colors duration-300 py-2" data-i18n="nav.testimonials">Testimonials</a>
   </nav>
   
   <div class="flex flex-col items-center gap-6 border-t border-brand-charcoal pt-8">

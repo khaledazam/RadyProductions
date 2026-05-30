@@ -17,10 +17,10 @@
           </div>
           <div class="flex flex-col">
             <span class="font-serif text-lg md:text-xl font-bold tracking-wider text-gold-gradient">Rady</span>
-            <span class="text-[8px] tracking-[0.3em] uppercase text-brand-champagne/80 -mt-1">Video Production</span>
+            <span class="text-[8px] tracking-[0.3em] uppercase text-brand-champagne/80 -mt-1" data-i18n="footer.tagline">Video Production</span>
           </div>
         </a>
-        <p class="text-xs md:text-sm text-brand-ivory/60 max-w-sm leading-relaxed">
+        <p class="text-xs md:text-sm text-brand-ivory/60 max-w-sm leading-relaxed" data-i18n="footer.desc">
           Premium cinematic storytelling for weddings, brands, commercials, and unforgettable moments. Creating visuals that stay, tell stories, and make a lasting impact.
         </p>
         <!-- Social Icons -->
@@ -90,35 +90,30 @@
 
       <!-- Column 2: Navigation Links -->
       <div class="flex flex-col gap-4">
-        <h4 class="text-xs tracking-[0.2em] uppercase text-brand-gold font-semibold">Explore</h4>
+        <h4 class="text-xs tracking-[0.2em] uppercase text-brand-gold font-semibold" data-i18n="footer.explore">Explore</h4>
         <ul class="flex flex-col gap-2.5">
-          {['About', 'Services', 'Portfolio', 'Experience', 'Testimonials'].map((item) => (
-            <li>
-              <a 
-                href={`#${item.toLowerCase()}`} 
-                class="text-xs text-brand-ivory/65 hover:text-brand-gold transition-colors duration-300"
-              >
-                {item}
-              </a>
-            </li>
-          ))}
+          <li><a href="#about" class="text-xs text-brand-ivory/65 hover:text-brand-gold transition-colors duration-300" data-i18n="footer.about">About</a></li>
+          <li><a href="#services" class="text-xs text-brand-ivory/65 hover:text-brand-gold transition-colors duration-300" data-i18n="footer.services">Services</a></li>
+          <li><a href="#portfolio" class="text-xs text-brand-ivory/65 hover:text-brand-gold transition-colors duration-300" data-i18n="footer.portfolio">Portfolio</a></li>
+          <li><a href="#experience" class="text-xs text-brand-ivory/65 hover:text-brand-gold transition-colors duration-300" data-i18n="footer.experience">Experience</a></li>
+          <li><a href="#testimonials" class="text-xs text-brand-ivory/65 hover:text-brand-gold transition-colors duration-300" data-i18n="footer.testimonials">Testimonials</a></li>
         </ul>
       </div>
 
       <!-- Column 3: Contact Info -->
       <div class="flex flex-col gap-4">
-        <h4 class="text-xs tracking-[0.2em] uppercase text-brand-gold font-semibold">Inquiries</h4>
+        <h4 class="text-xs tracking-[0.2em] uppercase text-brand-gold font-semibold" data-i18n="footer.inquiries">Inquiries</h4>
         <ul class="flex flex-col gap-3 text-xs text-brand-ivory/65">
           <li>
-            <span class="block text-brand-champagne/50 text-[10px] uppercase tracking-wider mb-1">Phone & WhatsApp</span>
+            <span class="block text-brand-champagne/50 text-[10px] uppercase tracking-wider mb-1" data-i18n="footer.phone_label">Phone &amp; WhatsApp</span>
             <a href="tel:+201066151490" class="hover:text-brand-gold transition-colors duration-300">+20 10 6615 1490</a>
           </li>
           <li>
-            <span class="block text-brand-champagne/50 text-[10px] uppercase tracking-wider mb-1">Office Location</span>
-            <span class="text-brand-ivory/80">Cairo, Egypt</span>
+            <span class="block text-brand-champagne/50 text-[10px] uppercase tracking-wider mb-1" data-i18n="footer.office_label">Office Location</span>
+            <span class="text-brand-ivory/80" data-i18n="footer.office_val">Cairo, Egypt</span>
           </li>
           <li>
-            <span class="block text-brand-champagne/50 text-[10px] uppercase tracking-wider mb-1">Email</span>
+            <span class="block text-brand-champagne/50 text-[10px] uppercase tracking-wider mb-1" data-i18n="footer.email_label">Email</span>
             <a href="mailto:info@radyvideo.com" class="hover:text-brand-gold transition-colors duration-300">info@radyvideo.com</a>
           </li>
         </ul>
@@ -129,7 +124,7 @@
     <!-- Bottom Line -->
     <div class="flex flex-col md:flex-row justify-between items-center gap-6 pt-10 border-t border-brand-charcoal/20">
       <!-- Copyright -->
-      <p class="text-[10px] tracking-widest text-brand-ivory/40 uppercase text-center md:text-left">
+      <p class="text-[10px] tracking-widest text-brand-ivory/40 uppercase text-center md:text-left" data-i18n="footer.copyright">
         &copy; {new Date().getFullYear()} RADY Video Production. All Rights Reserved.
       </p>
 

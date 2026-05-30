@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+
 @theme {
   --color-brand-matte: #0D0D0D;
   --color-brand-charcoal: #1A1A1A;
@@ -139,4 +140,117 @@
 .loading-lock {
   overflow: hidden !important;
   height: 100vh !important;
+}
+
+/* =============================================
+   RTL / ARABIC MODE
+   ============================================= */
+
+html[dir="rtl"] {
+  direction: rtl;
+}
+
+/* Arabic Font Families */
+html[dir="rtl"] .font-serif,
+html[dir="rtl"] h1.font-serif,
+html[dir="rtl"] h2.font-serif,
+html[dir="rtl"] h3.font-serif,
+html[dir="rtl"] h4.font-serif,
+html[dir="rtl"] blockquote.font-serif,
+html[dir="rtl"] p.font-serif {
+  font-family: 'Amiri', Georgia, serif;
+}
+
+html[dir="rtl"] body,
+html[dir="rtl"] .font-sans {
+  font-family: 'Tajawal', system-ui, sans-serif;
+}
+
+/* Kill wide letter-spacing for Arabic (it breaks ligatures) */
+html[dir="rtl"] [class*="tracking-"] {
+  letter-spacing: 0.01em !important;
+}
+
+/* RTL: Flip text alignments */
+html[dir="rtl"] .text-left  { text-align: right; }
+html[dir="rtl"] .text-right { text-align: left; }
+html[dir="rtl"] .md\:text-left  { text-align: right; }
+html[dir="rtl"] .md\:text-right { text-align: left; }
+
+/* RTL: Flip horizontal margins/paddings where needed */
+html[dir="rtl"] .border-l-2 {
+  border-left: none !important;
+  border-right-width: 2px !important;
+  border-right-style: solid !important;
+  border-right-color: var(--color-brand-gold) !important;
+  padding-left: 0 !important;
+  padding-right: 1rem !important;
+}
+
+/* RTL: flip absolute left/right positioning for decorative elements */
+html[dir="rtl"] .-left-4  { left: auto !important; right: -1rem !important; }
+html[dir="rtl"] .-right-4 { right: auto !important; left: -1rem !important; }
+html[dir="rtl"] .border-t-2.border-l-2 {
+  border-left: none !important;
+  border-right-width: 2px !important;
+  border-right-style: solid !important;
+  border-right-color: var(--color-brand-gold) !important;
+}
+html[dir="rtl"] .border-b-2.border-r-2 {
+  border-right: none !important;
+  border-left-width: 2px !important;
+  border-left-style: solid !important;
+  border-left-color: var(--color-brand-gold) !important;
+}
+
+/* RTL: Navbar & CTA alignment */
+html[dir="rtl"] .md\:text-left {
+  text-align: right;
+}
+
+/* RTL: Fix grid direction */
+html[dir="rtl"] .lg\:grid-cols-12 {
+  direction: rtl;
+}
+
+/* RTL: Signature line direction */
+html[dir="rtl"] #about-signature {
+  flex-direction: row-reverse;
+}
+
+/* RTL: Service card border animations */
+html[dir="rtl"] .service-card .absolute.top-0.left-0 {
+  left: auto;
+  right: 0;
+}
+html[dir="rtl"] .service-card .absolute.bottom-0.right-0 {
+  right: auto;
+  left: 0;
+}
+
+/* RTL: Film strip direction */
+html[dir="rtl"] #film-track {
+  flex-direction: row-reverse;
+}
+
+/* Language toggle button */
+#lang-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 4px 10px;
+  border: 1px solid rgba(199,167,106,0.2);
+  transition: border-color 0.3s ease;
+}
+#lang-toggle:hover {
+  border-color: rgba(199,167,106,0.5);
+}
+
+/* Custom Dynamic Language Toggle System */
+html[lang="en"] .lang-ar {
+  display: none !important;
+}
+html[lang="ar"] .lang-en {
+  display: none !important;
 }
