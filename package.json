@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@astrojs/node": "^10.1.2",
+    "@astrojs/vercel": "^10.0.8",
     "@lucide/astro": "^1.17.0",
     "@supabase/supabase-js": "^2.106.2",
     "@tailwindcss/vite": "^4.3.0",

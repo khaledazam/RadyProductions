@@ -1,0 +1,82 @@
+import { c as createComponent } from './astro-component_DnHt1ad6.mjs';
+import 'piccolore';
+import { s as renderHead, q as renderComponent, u as renderTemplate, j as addAttribute } from './entrypoint_CgqROQxQ.mjs';
+/* empty css                 */
+import { s as supabase } from './supabase_D9l0lVjm.mjs';
+import { c as createLucideIcon } from './createLucideIcon_CrT7CJvO.mjs';
+import { F as Film } from './film_CPn2YWVf.mjs';
+
+const ExternalLink = createLucideIcon("external-link", [["path", { "d": "M15 3h6v6" }], ["path", { "d": "M10 14 21 3" }], ["path", { "d": "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" }]]);
+
+const LogOut = createLucideIcon("log-out", [["path", { "d": "m16 17 5-5-5-5" }], ["path", { "d": "M21 12H9" }], ["path", { "d": "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" }]]);
+
+const Plus = createLucideIcon("plus", [["path", { "d": "M5 12h14" }], ["path", { "d": "M12 5v14" }]]);
+
+const SquarePen = createLucideIcon("square-pen", [["path", { "d": "M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" }], ["path", { "d": "M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" }]]);
+
+const Trash2 = createLucideIcon("trash-2", [["path", { "d": "M10 11v6" }], ["path", { "d": "M14 11v6" }], ["path", { "d": "M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" }], ["path", { "d": "M3 6h18" }], ["path", { "d": "M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" }]]);
+
+const $$Index = createComponent(async ($$result, $$props, $$slots) => {
+  const Astro2 = $$result.createAstro($$props, $$slots);
+  Astro2.self = $$Index;
+  const accessToken = Astro2.cookies.get("sb-access-token")?.value;
+  const refreshToken = Astro2.cookies.get("sb-refresh-token")?.value;
+  if (!accessToken || !refreshToken) {
+    return Astro2.redirect("/login");
+  }
+  const { data: sessionData, error: sessionErr } = await supabase.auth.setSession({
+    access_token: accessToken,
+    refresh_token: refreshToken
+  });
+  if (sessionErr || !sessionData.user) {
+    Astro2.cookies.delete("sb-access-token", { path: "/" });
+    Astro2.cookies.delete("sb-refresh-token", { path: "/" });
+    return Astro2.redirect("/login");
+  }
+  let actionError = "";
+  if (Astro2.request.method === "POST") {
+    try {
+      const formData = await Astro2.request.formData();
+      const action = formData.get("action")?.toString();
+      const id = formData.get("id")?.toString();
+      if (action === "delete" && id) {
+        const { data: item } = await supabase.from("portfolio_items").select("image").eq("id", id).single();
+        const { error: deleteErr } = await supabase.from("portfolio_items").delete().eq("id", id);
+        if (deleteErr) {
+          actionError = `Failed to delete: ${deleteErr.message}`;
+        } else {
+          if (item?.image && item.image.includes("portfolio-thumbnails")) {
+            const fileUrlParts = item.image.split("portfolio-thumbnails/");
+            if (fileUrlParts.length > 1) {
+              const filePath = fileUrlParts[1];
+              await supabase.storage.from("portfolio-thumbnails").remove([filePath]);
+            }
+          }
+        }
+      }
+    } catch (err) {
+      actionError = err.message || "An error occurred while deleting.";
+    }
+  }
+  const { data: works, error: fetchErr } = await supabase.from("portfolio_items").select("*").order("id", { ascending: false });
+  return renderTemplate`<html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>RADY Productions | Dashboard</title><!-- Google Fonts --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">${renderHead()}</head> <body class="bg-brand-matte min-h-screen font-sans text-brand-ivory p-6 md:p-12 relative overflow-x-hidden"> <!-- Grid Overlay --> <div class="absolute inset-0 z-0 pointer-events-none opacity-[0.02] bg-[linear-gradient(to_right,#C7A76A_1px,transparent_1px),linear-gradient(to_bottom,#C7A76A_1px,transparent_1px)] bg-[size:40px_40px]"></div> <div class="max-w-6xl mx-auto relative z-10 space-y-10"> <!-- Top Navigation / Header --> <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-brand-charcoal pb-8 gap-4"> <div> <span class="text-xs tracking-[0.4em] uppercase text-brand-gold font-semibold mb-1 block">
+Control Room
+</span> <h1 class="font-serif text-3xl md:text-4xl font-bold tracking-wider">
+Studio Dashboard
+</h1> </div> <div class="flex items-center gap-4 w-full sm:w-auto"> <!-- View Site --> <a href="/" target="_blank" class="flex items-center gap-2 px-4 py-2.5 border border-brand-charcoal text-brand-ivory hover:border-brand-gold hover:text-brand-gold text-xs tracking-widest uppercase transition-all duration-300 font-semibold"> <span>View Site</span> ${renderComponent($$result, "ExternalLink", ExternalLink, { "class": "w-3.5 h-3.5" })} </a> <!-- Logout --> <a href="/api/auth/logout" class="flex items-center gap-2 px-4 py-2.5 border border-brand-charcoal hover:border-red-500/50 text-brand-ivory/80 hover:text-red-400 text-xs tracking-widest uppercase transition-all duration-300 font-semibold"> <span>Logout</span> ${renderComponent($$result, "LogOut", LogOut, { "class": "w-3.5 h-3.5" })} </a> </div> </div> <!-- Action Error Banner --> ${actionError && renderTemplate`<div class="p-4 bg-red-950/40 border border-red-500/30 text-red-200 text-sm tracking-wide"> ${actionError} </div>`} <!-- Dashboard Stats Summary --> <div class="grid grid-cols-1 sm:grid-cols-3 gap-6"> <div class="bg-brand-charcoal/20 border border-brand-charcoal p-6 flex flex-col justify-between"> <span class="text-[10px] tracking-widest uppercase text-brand-gold/60">Total Selected Works</span> <span class="font-serif text-4xl font-bold text-brand-ivory mt-2">${works ? works.length : 0}</span> </div> <div class="bg-brand-charcoal/20 border border-brand-charcoal p-6 flex flex-col justify-between"> <span class="text-[10px] tracking-widest uppercase text-brand-gold/60">Active Categories</span> <span class="font-serif text-4xl font-bold text-brand-ivory mt-2">4</span> </div> <div class="bg-brand-charcoal/20 border border-brand-charcoal p-6 flex flex-col justify-between"> <span class="text-[10px] tracking-widest uppercase text-brand-gold/60">Operator Level</span> <span class="font-serif text-4xl font-bold text-brand-gold mt-2">ADMIN</span> </div> </div> <!-- Main Section Header --> <div class="flex justify-between items-center pt-4"> <h2 class="font-serif text-xl md:text-2xl font-bold tracking-wide flex items-center gap-3"> ${renderComponent($$result, "Film", Film, { "class": "w-5 h-5 text-brand-gold" })} <span>Cinematic Catalog</span> </h2> <a href="/admin/new" class="flex items-center gap-2 px-5 py-3 bg-brand-gold hover:bg-brand-gold/90 text-brand-matte text-xs tracking-widest uppercase transition-all duration-300 font-bold shadow-[0_4px_20px_rgba(199,167,106,0.15)]"> ${renderComponent($$result, "Plus", Plus, { "class": "w-4 h-4" })} <span>Add New Film</span> </a> </div> <!-- Works Table/Grid --> <div class="bg-brand-charcoal/10 border border-brand-charcoal overflow-hidden"> ${fetchErr ? renderTemplate`<div class="p-12 text-center text-brand-gold/60">
+Error loading portfolio catalog: ${fetchErr.message} </div>` : !works || works.length === 0 ? renderTemplate`<div class="p-20 text-center space-y-4"> <p class="text-brand-ivory/40 text-sm italic">No works found in the catalog.</p> <p class="text-xs text-brand-gold/60">Click "Add New Film" to upload your first creation.</p> </div>` : renderTemplate`<div class="overflow-x-auto"> <table class="w-full text-left border-collapse text-xs md:text-sm"> <thead> <tr class="border-b border-brand-charcoal bg-brand-charcoal/20 text-brand-gold/80 tracking-widest uppercase text-[10px] select-none"> <th class="p-4 md:p-6 font-semibold">Thumbnail</th> <th class="p-4 md:p-6 font-semibold">Title (EN / AR)</th> <th class="p-4 md:p-6 font-semibold">Category</th> <th class="p-4 md:p-6 font-semibold">Location</th> <th class="p-4 md:p-6 font-semibold text-right">Actions</th> </tr> </thead> <tbody class="divide-y divide-brand-charcoal/50"> ${works.map((item) => renderTemplate`<tr class="hover:bg-brand-charcoal/10 transition-colors duration-200"> <!-- Thumbnail --> <td class="p-4 md:p-6"> <div class="w-20 md:w-28 aspect-[16/10] bg-black border border-brand-charcoal overflow-hidden relative group"> <img${addAttribute(item.image, "src")}${addAttribute(item.title, "alt")} class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300"> </div> </td> <!-- Titles --> <td class="p-4 md:p-6 space-y-1"> <div class="font-bold text-brand-ivory text-sm">${item.title}</div> <div class="font-serif text-brand-gold/60 text-xs text-right" dir="rtl">${item.title_ar}</div> </td> <!-- Category --> <td class="p-4 md:p-6"> <span class="px-2.5 py-1 border border-brand-gold/30 text-brand-gold text-[9px] tracking-widest uppercase font-semibold bg-brand-gold/5"> ${item.category} </span> </td> <!-- Location --> <td class="p-4 md:p-6 space-y-1"> <div class="text-brand-ivory/80">${item.location}</div> <div class="text-brand-gold/40 text-xs font-serif text-right" dir="rtl">${item.location_ar}</div> </td> <!-- Actions --> <td class="p-4 md:p-6 text-right"> <div class="flex items-center justify-end gap-3"> <a${addAttribute(`/admin/edit/${item.id}`, "href")} class="p-2 border border-brand-charcoal text-brand-ivory/80 hover:border-brand-gold hover:text-brand-gold transition-colors duration-300" title="Edit work"> ${renderComponent($$result, "Edit", SquarePen, { "class": "w-3.5 h-3.5" })} </a> <form method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this film from the catalog? This action cannot be undone.');"> <input type="hidden" name="action" value="delete"> <input type="hidden" name="id"${addAttribute(item.id, "value")}> <button type="submit" class="p-2 border border-brand-charcoal hover:border-red-500/50 text-brand-ivory/80 hover:text-red-400 transition-colors duration-300 cursor-pointer" title="Delete work"> ${renderComponent($$result, "Trash2", Trash2, { "class": "w-3.5 h-3.5" })} </button> </form> </div> </td> </tr>`)} </tbody> </table> </div>`} </div> </div> </body> </html>`;
+}, "D:/rady/src/pages/admin/index.astro", void 0);
+
+const $$file = "D:/rady/src/pages/admin/index.astro";
+const $$url = "/admin";
+
+const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+      __proto__: null,
+      default: $$Index,
+      file: $$file,
+      url: $$url
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const page = () => _page;
+
+export { page };

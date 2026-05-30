@@ -1,0 +1,178 @@
+---
+import '../styles/global.css';
+
+// Server-side check: if already authenticated, redirect to /admin
+import { supabase } from '../lib/supabase';
+
+const accessToken = Astro.cookies.get('sb-access-token')?.value;
+const refreshToken = Astro.cookies.get('sb-refresh-token')?.value;
+
+if (accessToken && refreshToken) {
+  const { data } = await supabase.auth.setSession({
+    access_token: accessToken,
+    refresh_token: refreshToken,
+  });
+  if (data.user) {
+    return Astro.redirect('/admin');
+  }
+}
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RADY Productions | Admin Access</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-brand-matte min-h-screen flex items-center justify-center p-6 relative overflow-hidden font-sans text-brand-ivory">
+    
+    <!-- Decorative Cinematic Background Elements -->
+    <div class="absolute inset-0 z-0 pointer-events-none opacity-20">
+      <div class="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-brand-gold/10 blur-[120px]"></div>
+      <div class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-brand-gold/5 blur-[150px]"></div>
+      <!-- Grid Overlay -->
+      <div class="absolute inset-0 bg-[linear-gradient(to_right,rgba(199,167,106,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(199,167,106,0.03)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+    </div>
+
+    <!-- Login Container -->
+    <div class="w-full max-w-md relative z-10 select-none">
+      
+      <!-- Logo & Header -->
+      <div class="text-center mb-10">
+        <h1 class="font-serif text-4xl md:text-5xl font-bold tracking-widest text-brand-ivory mb-2">
+          RADY
+        </h1>
+        <p class="text-xs tracking-[0.4em] uppercase text-brand-gold font-semibold">
+          Studio Dashboard
+        </p>
+      </div>
+
+      <!-- Glassmorphic Login Card -->
+      <div class="bg-brand-charcoal/30 backdrop-blur-xl border border-brand-charcoal p-8 md:p-10 shadow-2xl relative overflow-hidden group">
+        <!-- Golden Top Accent Line -->
+        <div class="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-brand-gold to-transparent"></div>
+        
+        <!-- Camera HUD corner marks inside the login card for cinematic theme -->
+        <div class="absolute top-4 left-4 w-3 h-3 border-t border-l border-brand-gold/30"></div>
+        <div class="absolute top-4 right-4 w-3 h-3 border-t border-r border-brand-gold/30"></div>
+        <div class="absolute bottom-4 left-4 w-3 h-3 border-b border-l border-brand-gold/30"></div>
+        <div class="absolute bottom-4 right-4 w-3 h-3 border-b border-r border-brand-gold/30"></div>
+
+        <form id="login-form" class="space-y-6">
+          <div id="error-message" class="hidden p-3 bg-red-950/40 border border-red-500/40 text-red-200 text-xs tracking-wide text-center">
+            Invalid credentials. Please try again.
+          </div>
+
+          <!-- Email Input -->
+          <div class="space-y-2">
+            <label for="email" class="block text-[10px] tracking-widest uppercase text-brand-gold font-medium">
+              Operator Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              placeholder="operator@rady.com"
+              class="w-full bg-brand-matte/80 border border-brand-charcoal px-4 py-3 text-sm focus:outline-none focus:border-brand-gold/50 text-brand-ivory placeholder-brand-ivory/20 transition-all duration-300 font-mono"
+            />
+          </div>
+
+          <!-- Password Input -->
+          <div class="space-y-2">
+            <label for="password" class="block text-[10px] tracking-widest uppercase text-brand-gold font-medium">
+              Access Code (Password)
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              placeholder="••••••••"
+              class="w-full bg-brand-matte/80 border border-brand-charcoal px-4 py-3 text-sm focus:outline-none focus:border-brand-gold/50 text-brand-ivory placeholder-brand-ivory/20 transition-all duration-300 font-mono"
+            />
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            id="submit-btn"
+            class="w-full bg-brand-gold hover:bg-brand-gold/90 text-brand-matte font-medium text-xs tracking-widest uppercase py-3.5 transition-all duration-300 flex items-center justify-center gap-2 mt-8 shadow-[0_4px_20px_rgba(199,167,106,0.15)] hover:shadow-[0_4px_25px_rgba(199,167,106,0.25)] cursor-pointer"
+          >
+            <span id="btn-text">Authenticate</span>
+            <svg id="btn-spinner" class="animate-spin h-4 w-4 text-brand-matte hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </button>
+        </form>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="mt-8 text-center text-[10px] tracking-widest uppercase text-brand-gold/40">
+        Secure Terminal &bull; Authorized Personnel Only
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById('login-form') as HTMLFormElement;
+      const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+      const btnText = document.getElementById('btn-text') as HTMLSpanElement;
+      const btnSpinner = document.getElementById('btn-spinner') as SVGSVGElement;
+      const errorMessage = document.getElementById('error-message') as HTMLDivElement;
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // Reset states
+        errorMessage.classList.add('hidden');
+        submitBtn.disabled = true;
+        btnText.textContent = "Verifying...";
+        btnSpinner.classList.remove('hidden');
+
+        const formData = new FormData(form);
+
+        try {
+          const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            body: formData
+          });
+
+          const result = await response.json();
+
+          if (response.ok && result.success) {
+            // Authentication successful, redirect
+            window.location.href = '/admin';
+          } else {
+            // Show error message
+            errorMessage.textContent = result.error || 'Authentication failed.';
+            errorMessage.classList.remove('hidden');
+            
+            // Reset states
+            submitBtn.disabled = false;
+            btnText.textContent = "Authenticate";
+            btnSpinner.classList.add('hidden');
+          }
+        } catch (err) {
+          errorMessage.textContent = 'A connection error occurred. Please try again.';
+          errorMessage.classList.remove('hidden');
+          
+          // Reset states
+          submitBtn.disabled = false;
+          btnText.textContent = "Authenticate";
+          btnSpinner.classList.add('hidden');
+        }
+      });
+    </script>
+    <style is:global>
+      *, *::before, *::after {
+        cursor: auto !important;
+      }
+    </style>
+  </body>
+</html>
